@@ -1,0 +1,48 @@
+{
+  "title": "2024 Community Events",
+  "date": "2024-01-01",
+  "description": "Candidates forum, meet & greets, Installation Dinner and more from 2024.",
+  "cover": "./april-wendy-carrillo.jpg",
+  "photos": [
+    {
+      "src": "./april-wendy-carrillo.jpg",
+      "alt": "April Wendy Carrillo — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./may-randal-chan.jpg",
+      "alt": "May Randal Chan — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./aug-candidates-forum-2.jpg",
+      "alt": "Aug Candidates Forum — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./jan-meet-and-greet-capt-kusayanagi.jpg",
+      "alt": "Jan Meet & Greet (Capt. Kusayanagi) — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./september-installation-dinner.jpg",
+      "alt": "September Installation Dinner — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./aug-candidates-forum.jpg",
+      "alt": "Aug Candidates Forum — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./june-social-media-promo.jpg",
+      "alt": "June Social Media Promo — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./feb-congressman-jimmy-2.jpg",
+      "alt": "Feb Congressman Jimmy — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./06-26-live-promo-2.jpg",
+      "alt": "06/26 Live Promo — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./october-indigenous-day.jpg",
+      "alt": "October Indigenous Day — East Los Angeles Chamber of Commerce"
+    }
+  ]
+}

@@ -19,8 +19,8 @@ Companion to `01-site-audit.md`. This is the proposal to review before any code 
 | Styling | Plain CSS with custom properties (design tokens), no Tailwind | Same approach as the Innovative Repairs site; smallest surface for AI edits; no build-tool coupling. |
 | Content | `src/content/{members,categories,events,resources,sponsors,gallery,board}` | One folder per content type; one file per item. |
 | Images | `src/assets/` processed by Astro at build | Originals committed once; every size generated automatically. |
-| Hosting | **Cloudflare Pages** (free) | Git-push deploy, global CDN, free Turnstile for forms, Pages Functions for form handling without a server. GitHub Pages is the fallback if you'd rather mirror Innovative Repairs — forms would then go through a third-party endpoint. |
-| Forms | Cloudflare Pages Function → email via **Resend** (free tier) + Turnstile | Contact, newsletter, membership application (with file upload to R2 for logos). No reCAPTCHA. |
+| Hosting | **GitHub Pages** (decided) | Same model as Innovative Repairs. Push to `main` → GitHub Actions builds and deploys. `public/CNAME` carries the custom domain. |
+| Forms | **Web3Forms** (free, no account for the chamber to manage) | Contact, newsletter, membership application. Logo upload isn't on the free tier, so applicants attach it to the confirmation email. Access key lives in the repo variable `PUBLIC_WEB3FORMS_KEY`. |
 | Events calendar | Static list + optional Google Calendar embed | Events are Markdown files; an ICS feed is generated at build so members can subscribe. |
 | Search | **Pagefind** (static search index, built at deploy) | Full-text search over members + resources + events with zero backend. |
 | Analytics | GA4 + Google Search Console | Add before launch. |

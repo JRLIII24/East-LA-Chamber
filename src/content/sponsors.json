@@ -1,1 +1,79 @@
-[]
+[
+  {
+    "id": "beneficial-state-bank",
+    "name": "Beneficial State Bank",
+    "tier": "presenting",
+    "logo": "./sponsors/beneficial-state-bank.jpg",
+    "member": "beneficial-state-bank"
+  },
+  {
+    "id": "ca-water",
+    "name": "California Water Service",
+    "tier": "presenting",
+    "logo": "./sponsors/ca-water.png",
+    "member": "california-water-service"
+  },
+  {
+    "id": "socalgas",
+    "name": "SoCalGas",
+    "tier": "presenting",
+    "logo": "./sponsors/socalgas.jpg",
+    "member": "southern-california-gas"
+  },
+  {
+    "id": "telacu",
+    "name": "TELACU",
+    "tier": "presenting",
+    "logo": "./sponsors/telacu.png",
+    "member": "telacu"
+  },
+  {
+    "id": "via-care",
+    "name": "Via Care Community Health Center",
+    "tier": "presenting",
+    "logo": "./sponsors/via-care.jpg",
+    "member": "viacare"
+  },
+  {
+    "id": "barrio-planners",
+    "name": "Barrio Planners",
+    "tier": "community",
+    "logo": "./sponsors/barrio-planners.jpg"
+  },
+  {
+    "id": "blushed-academy",
+    "name": "Blushed Academy",
+    "tier": "community",
+    "logo": "./sponsors/blushed-academy.jpg"
+  },
+  {
+    "id": "doculogic",
+    "name": "DocuLogic",
+    "tier": "community",
+    "logo": "./sponsors/doculogic.jpg"
+  },
+  {
+    "id": "gm-private-security",
+    "name": "GM Private Security",
+    "tier": "community",
+    "logo": "./sponsors/gm-private-security.png"
+  },
+  {
+    "id": "health-net",
+    "name": "Health Net",
+    "tier": "community",
+    "logo": "./sponsors/health-net.png"
+  },
+  {
+    "id": "kaiser-permanente",
+    "name": "Kaiser Permanente",
+    "tier": "community",
+    "logo": "./sponsors/kaiser-permanente.png"
+  },
+  {
+    "id": "nolla",
+    "name": "Nolla",
+    "tier": "community",
+    "logo": "./sponsors/nolla.png"
+  }
+]

@@ -1,0 +1,129 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import { site } from '../../data/site';
+
+const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
+const subs = (await getCollection('subcategories')).sort((a, b) => a.data.name.localeCompare(b.data.name));
+// ASSET: replace with the current fillable PDF (copy into public/).
+const pdf = '/downloads/membership-application.pdf';
+---
+<Base title="Membership & Sponsorship Application" description="Apply online to join the East Los Angeles Chamber of Commerce. Takes about five minutes." noindex={false}>
+  <PageHero eyebrow="Membership" title="Apply for membership" lede="Tell us about your business. We'll review your application within 1–2 business days and follow up to finish setup." crumbs={[{ label: 'Membership', href: '/membership/' }, { label: 'Apply' }]} />
+
+  <section class="section">
+    <div class="container apply">
+      <form class="apply__form card" action="https://api.web3forms.com/submit" method="POST" data-form data-success="Thank you — your application has been received. We'll be in touch within 1–2 business days.">
+        <input type="hidden" name="access_key" value={site.formsKey} />
+        <input type="hidden" name="subject" value="New membership application — eastlachamber.com" />
+        <input type="hidden" name="from_name" value="East LA Chamber website" />
+        <input type="checkbox" name="botcheck" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <fieldset class="apply__group">
+          <legend>Your business</legend>
+          <div class="form-row">
+            <div class="field"><label for="business">Business or organization name *</label><input id="business" name="Business name" class="input" required autocomplete="organization" /></div>
+            <div class="field"><label for="website">Website</label><input id="website" name="Website" class="input" type="url" placeholder="https://" autocomplete="url" /></div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label for="category">Category *</label>
+              <select id="category" name="Category" class="select" required>
+                <option value="">Choose one…</option>
+                {categories.map((c) => <option value={c.data.name}>{c.data.name}</option>)}
+              </select>
+            </div>
+            <div class="field">
+              <label for="sub">Type of business</label>
+              <select id="sub" name="Sub-category" class="select">
+                <option value="">Choose one (optional)…</option>
+                {subs.map((s) => <option value={s.data.name}>{s.data.name}</option>)}
+              </select>
+            </div>
+          </div>
+          <div class="field"><label for="address">Business address</label><input id="address" name="Address" class="input" autocomplete="street-address" /></div>
+          <div class="field">
+            <label for="desc">Short description <span class="hint">(this appears in your directory listing)</span></label>
+            <textarea id="desc" name="Description" class="textarea" maxlength="600" placeholder="What you do, who you serve, what makes you special — 1–3 sentences."></textarea>
+          </div>
+          <div class="field"><label for="hours">Hours</label><input id="hours" name="Hours" class="input" placeholder="e.g. Mon–Fri 9am–6pm, Sat 10am–4pm" /></div>
+        </fieldset>
+
+        <fieldset class="apply__group">
+          <legend>Contact person</legend>
+          <div class="form-row">
+            <div class="field"><label for="name">Full name *</label><input id="name" name="Contact name" class="input" required autocomplete="name" /></div>
+            <div class="field"><label for="title">Title / role</label><input id="title" name="Title" class="input" autocomplete="organization-title" /></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label for="email">Email *</label><input id="email" name="email" class="input" type="email" required autocomplete="email" /></div>
+            <div class="field"><label for="phone">Phone *</label><input id="phone" name="Phone" class="input" type="tel" required autocomplete="tel" /></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="apply__group">
+          <legend>Membership</legend>
+          <div class="field">
+            <label for="level">Membership level *</label>
+            <select id="level" name="Membership level" class="select" required>
+              <option value="">Choose one…</option>
+              <option>Small business (1–10 employees)</option>
+              <option>Business (11–50 employees)</option>
+              <option>Corporate (50+ employees)</option>
+              <option>Non-profit / community organization</option>
+              <option>Not sure — please advise</option>
+            </select>
+          </div>
+          <div class="field">
+            <span class="field__label">Also interested in</span>
+            <div class="checks">
+              <label><input type="checkbox" name="Interests" value="Sponsorship" /> Sponsorship opportunities</label>
+              <label><input type="checkbox" name="Interests" value="Ribbon cutting" /> A ribbon-cutting or grand opening</label>
+              <label><input type="checkbox" name="Interests" value="Volunteering" /> Volunteering at events</label>
+              <label><input type="checkbox" name="Interests" value="Board" /> Board or committee service</label>
+            </div>
+          </div>
+          <div class="field"><label for="notes">Anything else?</label><textarea id="notes" name="Notes" class="textarea" style="min-height:6rem"></textarea></div>
+          <p class="small muted">After you submit, reply to our confirmation email with your logo (PNG or SVG) and any photos for your listing.</p>
+        </fieldset>
+
+        <button type="submit" class="btn btn--primary btn--lg">Submit application <Icon name="arrow-right" size={18} /></button>
+        <p class="small" role="status" aria-live="polite" data-status style="margin-top:var(--s-3)"></p>
+      </form>
+
+      <aside class="apply__aside">
+        <div class="card">
+          <h2 style="font-size:var(--fs-lg)">What happens next</h2>
+          <ol class="small apply__steps">
+            <li>We review your application (1–2 business days).</li>
+            <li>We confirm your level and send a dues invoice.</li>
+            <li>Your directory listing goes live.</li>
+          </ol>
+        </div>
+        <div class="card" id="pdf">
+          <h2 style="font-size:var(--fs-lg)">Prefer paper?</h2>
+          <p class="small">Download the fillable PDF, complete it and email it to <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+          <a href={pdf} class="btn btn--secondary" download><Icon name="file-text" size={16} /> Download PDF</a>
+        </div>
+        <p class="small muted">Questions? Call <a href={site.phoneHref}>{site.phone}</a>.</p>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .apply { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 60rem) { .apply { grid-template-columns: minmax(0, 1fr) 18rem; } }
+  .apply__form { padding: var(--s-6); display: grid; gap: var(--s-6); }
+  .apply__group { border: 0; padding: 0; margin: 0; display: grid; gap: var(--s-4); }
+  .apply__group legend { font-family: var(--font-display); font-size: var(--fs-xl); margin-bottom: var(--s-3); padding: 0; }
+  .field__label { font-weight: 600; font-size: var(--fs-sm); }
+  .checks { display: grid; gap: var(--s-2); }
+  .checks label { display: flex; gap: var(--s-2); align-items: center; font-size: var(--fs-sm); }
+  .checks input { width: 1.1rem; height: 1.1rem; accent-color: var(--brick); }
+  .apply__aside { display: grid; gap: var(--s-4); }
+  .apply__steps { padding-left: 1.2em; margin: 0; color: var(--ink-soft); display: grid; gap: var(--s-2); }
+</style>
+<script src="../../scripts/forms.ts"></script>

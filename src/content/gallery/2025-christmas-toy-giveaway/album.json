@@ -1,0 +1,32 @@
+{
+  "title": "Christmas Toy Giveaway 2025",
+  "date": "2025-12-13",
+  "description": "Our annual holiday toy giveaway for East LA families.",
+  "cover": "./christmas-toy-give-away-2.jpg",
+  "photos": [
+    {
+      "src": "./christmas-toy-give-away-2.jpg",
+      "alt": "Christmas Toy Give Away — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./christmas-toy-give-away-6.jpg",
+      "alt": "Christmas Toy Give Away — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./ela-chamber-toy-give-away.jpg",
+      "alt": "ELA Chamber Toy Give Away — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./christmas-toy-give-away-4.jpg",
+      "alt": "Christmas Toy Give Away — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./christmas-toy-give-away.jpg",
+      "alt": "Christmas Toy Give Away — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./christmas-toy-give-away-8.jpg",
+      "alt": "Christmas Toy Give Away — East Los Angeles Chamber of Commerce"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import { fmtDate } from '../../lib/format';
+
+const all = (await getCollection('resources')).sort((a, b) => a.data.order - b.data.order);
+const pinned = all.filter((r) => r.data.pinned);
+const groups = [
+  { key: 'residents', title: 'For residents' },
+  { key: 'businesses', title: 'For business owners' },
+  { key: 'everyone', title: 'For everyone' },
+] as const;
+---
+<Base title="Community Resources for East Los Angeles" description="Emergency numbers, trash and recycling schedules, local rules and other essential information for East LA residents and businesses.">
+  <PageHero eyebrow="Resources" title="Resources at your fingertips" lede="Quick, plain-language guides to the services and rules that affect life and business in unincorporated East Los Angeles." crumbs={[{ label: 'Resources' }]} />
+
+  {pinned.length > 0 && (
+    <section class="section--tight section">
+      <div class="container">
+        {pinned.map((r) => (
+          <a class="card pinned" href={`/resources/${r.id}/`}>
+            <span class="pinned__icon"><Icon name={r.data.icon as any} size={22} /></span>
+            <div><h2>{r.data.title}</h2><p>{r.data.summary}</p></div>
+            <Icon name="arrow-right" size={20} class="pinned__arrow" />
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="section" style="padding-top:0">
+    <div class="container flow" style="--s-4: var(--s-7)">
+      {groups.map((g) => {
+        const items = all.filter((r) => !r.data.pinned && r.data.audience === g.key);
+        return items.length ? (
+          <div>
+            <h2 class="group-h">{g.title}</h2>
+            <ul class="grid grid--2 res-list">
+              {items.map((r) => (
+                <li>
+                  <a class="card res-card" href={`/resources/${r.id}/`}>
+                    <span class="res-card__icon"><Icon name={r.data.icon as any} size={20} /></span>
+                    <div>
+                      <h3>{r.data.title}</h3>
+                      <p class="small">{r.data.summary}</p>
+                      <p class="small muted" style="margin-top:var(--s-2)">Updated {fmtDate(r.data.updated)}</p>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null;
+      })}
+    </div>
+  </section>
+
+  <section class="section band">
+    <div class="container" style="text-align:center">
+      <h2>Need help with something else?</h2>
+      <p class="lede" style="margin-inline:auto">Our office can point you to the right county department, program or partner organization.</p>
+      <p style="margin-top:var(--s-5)"><a href="/contact/" class="btn btn--primary">Contact the chamber</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pinned { display: flex; gap: var(--s-5); align-items: center; border-left: 4px solid var(--brick); }
+  .pinned h2 { font-size: var(--fs-xl); margin-bottom: var(--s-1); }
+  .pinned p { margin: 0; color: var(--ink-soft); }
+  .pinned__icon { flex: none; display: grid; place-items: center; width: 3rem; height: 3rem; border-radius: var(--radius); background: var(--blush); color: var(--brick); }
+  .pinned__arrow { margin-left: auto; flex: none; color: var(--brick); }
+  .group-h { font-size: var(--fs-xl); margin-bottom: var(--s-4); padding-bottom: var(--s-3); border-bottom: 1px solid var(--line); }
+  .res-list { list-style: none; margin: 0; padding: 0; }
+  .res-card { display: flex; gap: var(--s-4); align-items: start; }
+  .res-card__icon { flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: var(--radius); background: var(--blush); color: var(--brick); }
+  .res-card h3 { font-size: var(--fs-lg); }
+  .res-card p { margin: 0; }
+</style>

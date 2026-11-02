@@ -51,7 +51,7 @@ const isActive = (href: string) => path === href || (href !== '/' && path.starts
   .site-header__inner { display: flex; align-items: center; gap: var(--s-5); min-height: 4.75rem; }
 
   .brand { display: flex; align-items: center; gap: var(--s-3); text-decoration: none; color: var(--ink); margin-right: auto; }
-  .brand__mark { width: 3rem; height: 3rem; flex: none; }
+  .brand :global(.brand__mark) { width: 3rem; height: 3rem; flex: none; }
   .brand__text { display: flex; flex-direction: column; line-height: 1.1; }
   .brand__name { font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; }
   .brand__sub { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brick); font-weight: 600; }

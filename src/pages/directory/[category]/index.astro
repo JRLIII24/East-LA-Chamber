@@ -1,0 +1,105 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import MemberCard from '../../../components/MemberCard.astro';
+import Icon from '../../../components/Icon.astro';
+import { site } from '../../../data/site';
+
+export async function getStaticPaths() {
+  const categories = await getCollection('categories');
+  return categories.map((c) => ({ params: { category: c.id }, props: { category: c } }));
+}
+const { category } = Astro.props;
+const members = (await getCollection('members'))
+  .filter((m) => !m.data.draft && m.data.category.id === category.id)
+  .sort((a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.name.localeCompare(b.data.name));
+const subs = (await getCollection('subcategories'))
+  .filter((s) => members.some((m) => m.data.subcategory?.id === s.id))
+  .sort((a, b) => a.data.name.localeCompare(b.data.name));
+const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `${category.data.name} — East Los Angeles Chamber members`,
+  itemListElement: members.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.data.name, url: `${site.url}/directory/${category.id}/${m.id}/` })),
+};
+---
+<Base
+  title={`${category.data.name} in East Los Angeles`}
+  description={`${members.length} chamber-member ${category.data.name.toLowerCase()} businesses in East Los Angeles. ${category.data.description}`}
+  jsonLd={jsonLd}
+>
+  <PageHero
+    eyebrow="Member directory"
+    title={category.data.name}
+    lede={category.data.description}
+    crumbs={[{ label: 'Directory', href: '/directory/' }, { label: category.data.name }]}
+  />
+
+  <section class="section">
+    <div class="container">
+      {members.length === 0 ? (
+        <div class="card" style="text-align:center;padding:var(--s-7)">
+          <p class="lede" style="margin-inline:auto">No members listed in this category yet.</p>
+          <p><a href="/membership/" class="btn btn--primary">Be the first to join</a></p>
+        </div>
+      ) : (
+        <>
+          {subs.length > 1 && (
+            <div class="filters" data-filters>
+              <span class="filters__label small">Filter:</span>
+              <button class="tag is-active" type="button" data-sub="">All ({members.length})</button>
+              {subs.map((s) => (
+                <button class="tag" type="button" data-sub={s.id}>{s.data.name} ({members.filter((m) => m.data.subcategory?.id === s.id).length})</button>
+              ))}
+            </div>
+          )}
+          <div class="grid grid--2" data-list>{members.map((m) => <MemberCard member={m} />)}</div>
+          <p class="small muted" data-empty hidden>No members match that filter.</p>
+        </>
+      )}
+    </div>
+  </section>
+
+  <section class="section--tight section band">
+    <div class="container">
+      <h2 class="small" style="font-family:var(--font-text);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:var(--s-4)">Other categories</h2>
+      <ul class="other-cats">
+        {categories.filter((c) => c.id !== category.id).map((c) => <li><a href={`/directory/${c.id}/`} class="tag">{c.data.name}</a></li>)}
+      </ul>
+      <p style="margin-top:var(--s-5)"><a href="/directory/" class="btn btn--secondary">All categories <Icon name="arrow-right" size={16} /></a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .filters { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; margin-bottom: var(--s-6); }
+  .filters__label { color: var(--ink-muted); margin-right: var(--s-1); }
+  .filters .tag { cursor: pointer; background: #fff; border-color: var(--line-strong); color: var(--ink-soft); }
+  .filters .tag:hover { border-color: var(--brick); color: var(--brick); }
+  .filters .tag.is-active { background: var(--brick); border-color: var(--brick); color: #fff; }
+  .other-cats { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+  .other-cats .tag { text-decoration: none; background: #fff; }
+</style>
+
+<script>
+  const wrap = document.querySelector('[data-filters]');
+  const list = document.querySelector<HTMLElement>('[data-list]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  function apply(sub: string) {
+    if (!list) return;
+    let shown = 0;
+    list.querySelectorAll<HTMLElement>('[data-sub]').forEach((card) => {
+      const on = !sub || card.dataset.sub === sub; card.hidden = !on; if (on) shown++;
+    });
+    if (empty) empty.hidden = shown > 0;
+    wrap?.querySelectorAll('button').forEach((b) => b.classList.toggle('is-active', (b as HTMLElement).dataset.sub === sub));
+    const url = new URL(location.href); sub ? url.searchParams.set('sub', sub) : url.searchParams.delete('sub');
+    history.replaceState(null, '', url);
+  }
+  wrap?.addEventListener('click', (e) => { const b = (e.target as HTMLElement).closest<HTMLElement>('button[data-sub]'); if (b) apply(b.dataset.sub ?? ''); });
+  const initial = new URLSearchParams(location.search).get('sub');
+  if (initial) apply(initial);
+</script>

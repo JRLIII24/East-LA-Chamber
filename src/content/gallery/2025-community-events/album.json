@@ -1,0 +1,32 @@
+{
+  "title": "2025 Community Events",
+  "date": "2025-01-01",
+  "description": "Highlights from chamber events and programs in 2025.",
+  "cover": "./public-resources-list-page.jpg",
+  "photos": [
+    {
+      "src": "./public-resources-list-page.jpg",
+      "alt": "Public Resources List Page — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./april-wake-up-with-east-la.jpg",
+      "alt": "April Wake Up with East LA — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./final-asm-jessica-m-caloza.jpg",
+      "alt": "Final Asm Jessica M. Caloza — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./meet-and-greet-captain-antillon.jpg",
+      "alt": "Meet & Greet Captain Antillon — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./taste-of-east-la.jpg",
+      "alt": "Taste of East LA — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./social-media-promo-qr-code.jpg",
+      "alt": "Social Media Promo (QR Code) — East Los Angeles Chamber of Commerce"
+    }
+  ]
+}

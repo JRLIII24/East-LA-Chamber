@@ -62,7 +62,7 @@ const year = new Date().getFullYear();
   }
   .site-footer__col--wide { grid-column: span 2; }
   @media (max-width: 40rem) { .site-footer__col--wide { grid-column: span 1; } }
-  .site-footer__mark { width: 4rem; height: 4rem; margin-bottom: var(--s-4); }
+  .site-footer__brand :global(.site-footer__mark) { width: 4rem; height: 4rem; margin-bottom: var(--s-4); }
   .site-footer__name { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.2; margin-bottom: var(--s-2); }
   .site-footer__since { color: var(--gold); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
   .site-footer__h { font-family: var(--font-text); font-size: var(--fs-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--on-night-soft); margin-bottom: var(--s-4); font-weight: 600; }

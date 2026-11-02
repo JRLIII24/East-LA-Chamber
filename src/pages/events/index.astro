@@ -1,0 +1,106 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import { eventWhen, month, day } from '../../lib/format';
+import { site } from '../../data/site';
+
+const now = new Date();
+const all = (await getCollection('events')).filter((e) => !e.data.draft);
+const upcoming = all.filter((e) => (e.data.end ?? e.data.start) >= now).sort((a, b) => a.data.start.getTime() - b.data.start.getTime());
+const past = all.filter((e) => (e.data.end ?? e.data.start) < now).sort((a, b) => b.data.start.getTime() - a.data.start.getTime()).slice(0, 12);
+const albums = (await getCollection('albums')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 3);
+---
+<Base title="Events — Mixers, Workshops & Community Celebrations" description="Upcoming East Los Angeles Chamber of Commerce events: networking mixers, Wake Up with East LA breakfasts, candidate forums, the Installation Dinner and holiday giveaways.">
+  <PageHero eyebrow="Events" title="Come as you are. Leave connected." lede="Our events bring together business owners, residents and elected officials. Most are free and open to everyone." crumbs={[{ label: 'Events' }]}>
+    <div class="page-hero__actions">
+      <a href="/events.ics" class="btn btn--secondary"><Icon name="calendar" size={16} /> Subscribe to calendar</a>
+      <a href={site.social.instagram} target="_blank" rel="noopener" class="btn btn--ghost">Follow on Instagram <Icon name="arrow-up-right" size={16} /></a>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>Upcoming</h2></div>
+      {upcoming.length ? (
+        <ul class="ev-list">
+          {upcoming.map((e) => (
+            <li>
+              <a class="card ev" href={`/events/${e.id}/`}>
+                <time class="ev__date" datetime={e.data.start.toISOString()}>
+                  <span class="ev__month">{month(e.data.start)}</span>
+                  <span class="ev__day">{day(e.data.start)}</span>
+                </time>
+                <div class="ev__body">
+                  <h3>{e.data.title}</h3>
+                  <p class="small">{eventWhen(e.data.start, e.data.end, e.data.allDay)} · {e.data.location.name}</p>
+                  <p class="small muted">{e.data.cost}</p>
+                </div>
+                {e.data.image && <Image src={e.data.image} alt={e.data.imageAlt ?? ''} width={320} height={200} class="ev__img" />}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="card" style="display:flex;gap:var(--s-4);align-items:center">
+          <span style="color:var(--terracotta);flex:none;display:inline-flex"><Icon name="calendar" size={28} /></span>
+          <p style="margin:0"><strong>New events are being scheduled.</strong> Subscribe to the newsletter below or follow us on social media and we'll let you know first.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {past.length > 0 && (
+    <section class="section band">
+      <div class="container">
+        <div class="section-head"><h2>Recent events</h2></div>
+        <ul class="grid grid--3 ev-past">
+          {past.map((e) => (
+            <li><a class="card" href={`/events/${e.id}/`}><p class="small muted">{eventWhen(e.data.start, undefined, true)}</p><h3 style="font-size:var(--fs-lg)">{e.data.title}</h3></a></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {albums.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head section-head--split">
+          <div><p class="eyebrow">Photo gallery</p><h2>From past events</h2></div>
+          <a href="/gallery/" class="btn btn--secondary">All albums <Icon name="arrow-right" size={16} /></a>
+        </div>
+        <ul class="grid grid--3 albums">
+          {albums.map((a) => (
+            <li>
+              <a class="album" href={`/gallery/${a.id}/`}>
+                <Image src={a.data.cover} alt="" width={640} height={420} class="album__img" />
+                <span class="album__cap"><strong>{a.data.title}</strong><span class="small">{a.data.photos.length} photos</span></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .ev-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); }
+  .ev { display: flex; gap: var(--s-5); align-items: center; }
+  .ev__date { flex: none; display: grid; place-items: center; width: 4.25rem; padding: var(--s-2) 0; background: var(--blush); border: 1px solid var(--terracotta-soft); border-radius: var(--radius); color: var(--brick-deep); }
+  .ev__month { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .ev__day { font-family: var(--font-display); font-size: 2rem; line-height: 1; }
+  .ev__body { flex: 1; min-width: 0; }
+  .ev__body h3 { font-size: var(--fs-xl); margin-bottom: var(--s-1); }
+  .ev__body p { margin: 0; }
+  .ev__img { flex: none; width: 10rem; height: 6.25rem; object-fit: cover; border-radius: var(--radius); }
+  @media (max-width: 40rem) { .ev__img { display: none; } }
+  .ev-past, .albums { list-style: none; margin: 0; padding: 0; }
+  .album { display: block; position: relative; border-radius: var(--radius-lg); overflow: hidden; color: #fff; text-decoration: none; }
+  .album__img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; transition: transform 500ms var(--ease); }
+  .album:hover .album__img { transform: scale(1.04); }
+  .album__cap { position: absolute; inset: auto 0 0 0; padding: var(--s-5) var(--s-4) var(--s-4); display: grid; background: linear-gradient(180deg, transparent, rgba(20,18,16,0.85)); }
+</style>

@@ -1,0 +1,85 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Icon from '../../components/Icon.astro';
+import { fmtWeekday, fmtDate, fmtTime } from '../../lib/format';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const events = (await getCollection('events')).filter((e) => !e.data.draft);
+  return events.map((e) => ({ params: { slug: e.id }, props: { event: e } }));
+}
+const { event } = Astro.props;
+const d = event.data;
+const { Content } = await render(event);
+const album = d.album ? await getEntry(d.album) : undefined;
+const isPast = (d.end ?? d.start) < new Date();
+const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.location.address ?? d.location.name + ', East Los Angeles, CA')}`;
+const gcal = (() => {
+  const f = (x: Date) => x.toISOString().replace(/[-:]|\.\d{3}/g, '');
+  const end = d.end ?? new Date(d.start.getTime() + 2 * 3600e3);
+  const p = new URLSearchParams({ action: 'TEMPLATE', text: d.title, dates: `${f(d.start)}/${f(end)}`, location: d.location.address ?? d.location.name, details: `${site.url}/events/${event.id}/` });
+  return `https://calendar.google.com/calendar/render?${p}`;
+})();
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: d.title,
+  startDate: d.start.toISOString(),
+  ...(d.end ? { endDate: d.end.toISOString() } : {}),
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: { '@type': 'Place', name: d.location.name, ...(d.location.address ? { address: d.location.address } : {}) },
+  organizer: { '@id': `${site.url}/#organization` },
+  ...(d.image ? { image: new URL(d.image.src, site.url).href } : {}),
+  offers: { '@type': 'Offer', price: d.cost.toLowerCase() === 'free' ? '0' : d.cost.replace(/[^\d.]/g, '') || '0', priceCurrency: 'USD', url: d.rsvp ?? `${site.url}/events/${event.id}/` },
+};
+---
+<Base title={`${d.title} — ${fmtDate(d.start, { year: undefined })}`} description={`${d.title} on ${fmtWeekday(d.start)}, ${fmtDate(d.start)} at ${d.location.name}. ${d.cost}. Hosted by the East Los Angeles Chamber of Commerce.`} image={d.image?.src} type="article" jsonLd={jsonLd}>
+  <article data-pagefind-body data-pagefind-filter="type:event">
+    <header class="ev-head">
+      <div class="container">
+        <Breadcrumb items={[{ label: 'Events', href: '/events/' }, { label: d.title }]} />
+        <div class="ev-head__grid">
+          <div>
+            <p class="eyebrow">{isPast ? 'Past event' : 'Upcoming event'}</p>
+            <h1>{d.title}</h1>
+            <dl class="ev-facts">
+              <div><dt><Icon name="calendar" size={18} /></dt><dd><strong>{fmtWeekday(d.start)}, {fmtDate(d.start)}</strong>{!d.allDay && <><br />{fmtTime(d.start)}{d.end && ` – ${fmtTime(d.end)}`}</>}</dd></div>
+              <div><dt><Icon name="map-pin" size={18} /></dt><dd><strong>{d.location.name}</strong>{d.location.address && <><br /><a href={mapsUrl} target="_blank" rel="noopener">{d.location.address}</a></>}</dd></div>
+              <div><dt><Icon name="handshake" size={18} /></dt><dd><strong>{d.cost}</strong></dd></div>
+            </dl>
+            {!isPast && (
+              <div class="ev-head__actions">
+                {d.rsvp ? <a href={d.rsvp} target="_blank" rel="noopener" class="btn btn--primary btn--lg">RSVP <Icon name="arrow-up-right" size={18} /></a>
+                        : <a href={`/contact/?topic=event&event=${encodeURIComponent(d.title)}`} class="btn btn--primary btn--lg">RSVP by email</a>}
+                <a href={gcal} target="_blank" rel="noopener" class="btn btn--secondary">Add to Google Calendar</a>
+              </div>
+            )}
+            {isPast && album && <p><a href={`/gallery/${album.id}/`} class="btn btn--secondary"><Icon name="image" size={16} /> View photos</a></p>}
+          </div>
+          {d.image && <Image src={d.image} alt={d.imageAlt ?? ''} width={800} class="ev-head__img" />}
+        </div>
+      </div>
+    </header>
+
+    <div class="container--narrow section">
+      <div class="prose"><Content /></div>
+      <p class="small muted" style="margin-top:var(--s-7)">Questions? Call <a href={site.phoneHref}>{site.phone}</a> or email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .ev-head { padding-block: var(--s-6) var(--s-7); background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%); border-bottom: 1px solid var(--line); }
+  .ev-head__grid { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 56rem) { .ev-head__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); } }
+  .ev-head__img { border-radius: var(--radius-lg); box-shadow: var(--shadow); width: 100%; }
+  .ev-facts { margin: var(--s-5) 0 0; display: grid; gap: var(--s-3); }
+  .ev-facts > div { display: flex; gap: var(--s-3); }
+  .ev-facts dt { color: var(--brick); margin-top: 0.2em; }
+  .ev-facts dd { margin: 0; }
+  .ev-head__actions { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-6); }
+</style>

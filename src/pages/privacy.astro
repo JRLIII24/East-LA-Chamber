@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+---
+<Base title="Privacy Policy" description="How the East Los Angeles Chamber of Commerce website collects and uses information." noindex>
+  <PageHero title="Privacy policy" lede="Last updated November 2026" crumbs={[{ label: 'Privacy' }]} />
+  <section class="section"><div class="container--narrow prose">
+    <h2>What we collect</h2>
+    <p>When you fill out a form on this site (contact, newsletter or membership application) we receive the information you type, such as your name, email, phone and business details. We use it only to respond to you and to administer chamber membership and communications.</p>
+    <h2>Forms</h2>
+    <p>Forms are delivered to us by <a href="https://web3forms.com" target="_blank" rel="noopener">Web3Forms</a>, which forwards submissions to our email and does not sell or retain them for marketing.</p>
+    <h2>Analytics</h2>
+    <p>We use Google Analytics to understand how the site is used (pages visited, device type, general location). This data is aggregated and does not identify you personally. You can opt out with the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics opt-out browser add-on</a>.</p>
+    <h2>Cookies</h2>
+    <p>This site sets no cookies of its own. Embedded content such as Google Maps may set its own cookies according to Google's privacy policy.</p>
+    <h2>Member directory</h2>
+    <p>Business information in the directory is published with the member's consent as part of membership. Members can request changes or removal at any time by emailing <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    <h2>Contact</h2>
+    <p>{site.name}, {site.address.street}, {site.address.city}, {site.address.state} {site.address.zip} · <a href={site.phoneHref}>{site.phone}</a> · <a href={`mailto:${site.email}`}>{site.email}</a></p>
+  </div></section>
+</Base>

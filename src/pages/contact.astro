@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+
+const topics = [
+  { v: 'general', l: 'General question' },
+  { v: 'membership', l: 'Membership' },
+  { v: 'sponsorship', l: 'Sponsorship' },
+  { v: 'event', l: 'Events / RSVP' },
+  { v: 'listing', l: 'Update my directory listing' },
+  { v: 'media', l: 'Press / media' },
+];
+const mapEmbed = `https://www.google.com/maps?q=${encodeURIComponent(`${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip}`)}&output=embed`;
+const jsonLd = { '@context': 'https://schema.org', '@type': 'ContactPage', mainEntity: { '@id': `${site.url}/#organization` } };
+---
+<Base title="Contact the East LA Chamber of Commerce" description={`Call ${site.phone}, email ${site.email}, or visit us at ${site.address.street}, Los Angeles, CA ${site.address.zip}. We're here to help East LA businesses and residents.`} jsonLd={jsonLd}>
+  <PageHero eyebrow="Contact" title="Let's build something together." lede="Questions about membership, an event, or how the chamber can help your business? Reach out — a real person will reply." crumbs={[{ label: 'Contact' }]} />
+
+  <section class="section">
+    <div class="container contact">
+      <form class="card contact__form" action="https://api.web3forms.com/submit" method="POST" data-form data-success="Thanks — your message is on its way. We usually reply within one business day.">
+        <input type="hidden" name="access_key" value={site.formsKey} />
+        <input type="hidden" name="subject" value="Contact form — eastlachamber.com" />
+        <input type="hidden" name="from_name" value="East LA Chamber website" />
+        <input type="checkbox" name="botcheck" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="form-row">
+          <div class="field"><label for="c-name">Full name *</label><input id="c-name" name="Name" class="input" required autocomplete="name" /></div>
+          <div class="field"><label for="c-email">Email *</label><input id="c-email" name="email" class="input" type="email" required autocomplete="email" /></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="c-phone">Phone</label><input id="c-phone" name="Phone" class="input" type="tel" autocomplete="tel" /></div>
+          <div class="field">
+            <label for="c-topic">Topic</label>
+            <select id="c-topic" name="Topic" class="select" data-topic>{topics.map((t) => <option value={t.v}>{t.l}</option>)}</select>
+          </div>
+        </div>
+        <div class="field"><label for="c-business">Business (optional)</label><input id="c-business" name="Business" class="input" data-business autocomplete="organization" /></div>
+        <div class="field"><label for="c-msg">Message *</label><textarea id="c-msg" name="Message" class="textarea" required data-message></textarea></div>
+        <button type="submit" class="btn btn--primary btn--lg">Send message <Icon name="arrow-right" size={18} /></button>
+        <p class="small" role="status" aria-live="polite" data-status></p>
+      </form>
+
+      <div class="contact__info">
+        <div class="card">
+          <h2 style="font-size:var(--fs-lg)">Visit, call or write</h2>
+          <address class="contact__addr">
+            <p><Icon name="map-pin" size={18} /><span><a href={site.address.mapsUrl} target="_blank" rel="noopener">{site.address.street}<br />{site.address.city}, {site.address.state} {site.address.zip}</a></span></p>
+            <p><Icon name="phone" size={18} /><a href={site.phoneHref}>{site.phone}</a></p>
+            <p><Icon name="mail" size={18} /><a href={`mailto:${site.email}`}>{site.email}</a></p>
+            <p><Icon name="clock" size={18} /><span>{site.hours}</span></p>
+          </address>
+          <ul class="contact__social" aria-label="Social media">
+            <li><a href={site.social.facebook} target="_blank" rel="noopener"><Icon name="facebook" size={18} /> Facebook</a></li>
+            <li><a href={site.social.instagram} target="_blank" rel="noopener"><Icon name="instagram" size={18} /> Instagram</a></li>
+            <li><a href={site.social.x} target="_blank" rel="noopener"><Icon name="x-social" size={18} /> X</a></li>
+          </ul>
+        </div>
+        <div class="contact__map">
+          <iframe src={mapEmbed} title="Map showing the East Los Angeles Chamber of Commerce office" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 60rem) { .contact { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); } }
+  .contact__form { padding: var(--s-6); display: grid; gap: var(--s-4); }
+  .contact__info { display: grid; gap: var(--s-4); }
+  .contact__addr { font-style: normal; display: grid; gap: var(--s-3); margin-bottom: var(--s-4); }
+  .contact__addr p { margin: 0; display: flex; gap: var(--s-3); align-items: start; }
+  .contact__addr .icon { color: var(--brick); flex: none; margin-top: 0.25em; }
+  .contact__addr a { text-decoration: none; color: var(--ink); }
+  .contact__addr a:hover { color: var(--brick); }
+  .contact__social { list-style: none; margin: 0; padding: var(--s-4) 0 0; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: var(--s-4); }
+  .contact__social a { display: inline-flex; gap: var(--s-2); align-items: center; text-decoration: none; color: var(--ink-soft); font-size: var(--fs-sm); font-weight: 500; }
+  .contact__social a:hover { color: var(--brick); }
+  .contact__map { border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--line); aspect-ratio: 4 / 3; }
+  .contact__map iframe { width: 100%; height: 100%; border: 0; display: block; }
+</style>
+<script src="../scripts/forms.ts"></script>
+<script>
+  // Pre-fill from links like /contact/?topic=listing&business=Name or ?event=Title
+  const p = new URLSearchParams(location.search);
+  const topic = document.querySelector<HTMLSelectElement>('[data-topic]');
+  const business = document.querySelector<HTMLInputElement>('[data-business]');
+  const msg = document.querySelector<HTMLTextAreaElement>('[data-message]');
+  if (topic && p.get('topic')) topic.value = p.get('topic')!;
+  if (business && p.get('business')) business.value = p.get('business')!;
+  if (msg && p.get('event')) msg.value = `I'd like to RSVP for: ${p.get('event')}\n\nNumber of guests: `;
+</script>

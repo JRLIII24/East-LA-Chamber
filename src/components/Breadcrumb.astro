@@ -1,0 +1,35 @@
+---
+import { site } from '../data/site';
+interface Props { items: { label: string; href?: string }[] }
+const { items } = Astro.props;
+const all = [{ label: 'Home', href: '/' }, ...items];
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: all.map((c, i) => ({
+    '@type': 'ListItem', position: i + 1, name: c.label,
+    ...(c.href ? { item: new URL(c.href, site.url).href } : {}),
+  })),
+};
+---
+<nav class="crumbs" aria-label="Breadcrumb">
+  <ol>
+    {all.map((c, i) => (
+      <li>
+        {c.href && i < all.length - 1 ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+      </li>
+    ))}
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />
+
+<style>
+  .crumbs { margin-bottom: var(--s-5); font-size: var(--fs-sm); }
+  .crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); color: var(--ink-muted); }
+  .crumbs li + li::before { content: '/'; margin-right: var(--s-2); color: var(--line-strong); }
+  .crumbs a { color: var(--ink-soft); text-decoration: none; }
+  .crumbs a:hover { color: var(--brick); }
+  :global(.band--night) .crumbs ol, :global(.band--brick) .crumbs ol,
+  :global(.band--night) .crumbs a, :global(.band--brick) .crumbs a { color: var(--on-night); }
+  :global(.band--night) .crumbs li + li::before, :global(.band--brick) .crumbs li + li::before { color: var(--on-night-soft); }
+</style>

@@ -1,0 +1,62 @@
+---
+import { getCollection } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { fmtDate } from '../../lib/format';
+
+export async function getStaticPaths() {
+  const albums = await getCollection('albums');
+  return albums.map((a) => ({ params: { album: a.id }, props: { album: a } }));
+}
+const { album } = Astro.props;
+const d = album.data;
+// Full-size variants for the lightbox
+const full = await Promise.all(d.photos.map((p) => getImage({ src: p.src, width: 1800, format: 'webp' })));
+const others = (await getCollection('albums')).filter((a) => a.id !== album.id).sort((a, b) => b.data.date.getTime() - a.data.date.getTime()).slice(0, 3);
+---
+<Base title={`${d.title} — Photo Gallery`} description={d.description ?? `${d.photos.length} photos from ${d.title}.`} image={d.cover.src}>
+  <PageHero eyebrow={fmtDate(d.date, { day: undefined })} title={d.title} lede={d.description} crumbs={[{ label: 'Gallery', href: '/gallery/' }, { label: d.title }]} />
+
+  <section class="section">
+    <div class="container">
+      <ul class="masonry" data-gallery>
+        {d.photos.map((p, i) => (
+          <li>
+            <a href={full[i].src} data-pswp-width={full[i].attributes.width} data-pswp-height={full[i].attributes.height} target="_blank" rel="noopener">
+              <Image src={p.src} alt={p.alt} width={640} class="masonry__img" />
+              {p.caption && <span class="visually-hidden">{p.caption}</span>}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {others.length > 0 && (
+    <section class="section band">
+      <div class="container">
+        <h2 class="small" style="font-family:var(--font-text);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:var(--s-4)">More albums</h2>
+        <ul class="grid grid--3 more">
+          {others.map((a) => <li><a class="card" href={`/gallery/${a.id}/`}><h3 style="font-size:var(--fs-lg);margin:0">{a.data.title}</h3><p class="small muted" style="margin:var(--s-1) 0 0">{a.data.photos.length} photos</p></a></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .masonry { list-style: none; margin: 0; padding: 0; columns: 3 16rem; column-gap: var(--s-4); }
+  .masonry li { break-inside: avoid; margin-bottom: var(--s-4); }
+  .masonry a { display: block; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); }
+  .masonry__img { width: 100%; height: auto; transition: transform 400ms var(--ease); }
+  .masonry a:hover .masonry__img { transform: scale(1.03); }
+  .more { list-style: none; margin: 0; padding: 0; }
+</style>
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+  import 'photoswipe/style.css';
+  const lightbox = new PhotoSwipeLightbox({ gallery: '[data-gallery]', children: 'a', pswpModule: () => import('photoswipe') });
+  lightbox.init();
+</script>

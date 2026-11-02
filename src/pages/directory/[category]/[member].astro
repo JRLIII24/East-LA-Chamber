@@ -1,0 +1,144 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../../layouts/Base.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import MemberCard from '../../../components/MemberCard.astro';
+import Icon from '../../../components/Icon.astro';
+import { site } from '../../../data/site';
+import { telHref } from '../../../lib/format';
+
+export async function getStaticPaths() {
+  const members = (await getCollection('members')).filter((m) => !m.data.draft);
+  return members.map((m) => ({ params: { category: m.data.category.id, member: m.id }, props: { member: m } }));
+}
+const { member } = Astro.props;
+const d = member.data;
+const { Content } = await render(member);
+const hasBody = (member.body ?? '').trim().length > 0 && (member.body ?? '').trim() !== (d.excerpt ?? '').trim();
+const category = await getEntry(d.category);
+const sub = d.subcategory ? await getEntry(d.subcategory) : undefined;
+const related = (await getCollection('members'))
+  .filter((m) => !m.data.draft && m.id !== member.id && m.data.category.id === d.category.id)
+  .sort((a, b) => Number(a.data.subcategory?.id === d.subcategory?.id) < Number(b.data.subcategory?.id === d.subcategory?.id) ? 1 : -1)
+  .slice(0, 4);
+const mapsUrl = d.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.address + ', East Los Angeles, CA')}` : undefined;
+const siteHost = d.website ? new URL(d.website).hostname.replace(/^www\./, '') : undefined;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: d.name,
+  url: `${site.url}/directory/${d.category.id}/${member.id}/`,
+  ...(d.excerpt ? { description: d.excerpt } : {}),
+  ...(d.phone ? { telephone: d.phone } : {}),
+  ...(d.website ? { sameAs: [d.website] } : {}),
+  ...(d.address ? { address: { '@type': 'PostalAddress', streetAddress: d.address, addressLocality: 'Los Angeles', addressRegion: 'CA', addressCountry: 'US' } } : {}),
+  ...(d.logo ? { image: new URL(d.logo.src, site.url).href } : {}),
+  memberOf: { '@type': 'Organization', name: site.name, url: site.url },
+};
+---
+<Base
+  title={`${d.name} — ${sub?.data.name ?? category?.data.name} in East Los Angeles`}
+  description={d.excerpt ?? `${d.name} is a member of the East Los Angeles Chamber of Commerce.${d.phone ? ` Call ${d.phone}.` : ''}`}
+  image={d.logo?.src ?? d.photo?.src}
+  jsonLd={jsonLd}
+>
+  <article data-pagefind-body data-pagefind-filter="type:member" data-pagefind-meta={`category:${category?.data.name}`}>
+    <section class="member-hero">
+      <div class="container">
+        <Breadcrumb items={[{ label: 'Directory', href: '/directory/' }, { label: category?.data.name ?? '', href: `/directory/${d.category.id}/` }, { label: d.name }]} />
+        <div class="member-hero__grid">
+          <div class="member-hero__media">
+            {d.logo ? <Image src={d.logo} alt={`${d.name} logo`} width={480} class="member-hero__logo" />
+              : d.photo ? <Image src={d.photo} alt={`${d.name}`} width={640} class="member-hero__photo" />
+              : <span class="member-hero__initials">{d.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('')}</span>}
+          </div>
+          <div>
+            <p class="eyebrow">{sub ? <a href={`/directory/${d.category.id}/?sub=${sub.id}`}>{sub.data.name}</a> : category?.data.name}</p>
+            <h1 data-pagefind-meta="title">{d.name}</h1>
+            {d.excerpt && <p class="lede">{d.excerpt}</p>}
+            <div class="member-hero__actions">
+              {d.phone && <a href={telHref(d.phone)} class="btn btn--primary"><Icon name="phone" size={16} /> {d.phone}</a>}
+              {d.website && <a href={d.website} target="_blank" rel="noopener" class="btn btn--secondary">Website <Icon name="arrow-up-right" size={16} /></a>}
+              {mapsUrl && <a href={mapsUrl} target="_blank" rel="noopener" class="btn btn--secondary"><Icon name="map-pin" size={16} /> Directions</a>}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container member-body">
+        <div class="prose">
+          <h2 class="visually-hidden">About {d.name}</h2>
+          {hasBody ? <Content /> : <p class="muted">{d.name} is a member of the East Los Angeles Chamber of Commerce.{d.phone && <> Call <a href={telHref(d.phone)}>{d.phone}</a> for hours and details.</>}</p>}
+          {d.photo && d.logo && <Image src={d.photo} alt={d.name} width={900} class="member-body__photo" />}
+        </div>
+        <aside class="member-aside">
+          <div class="card">
+            <h2 class="member-aside__h">Details</h2>
+            <dl class="member-dl">
+              {d.phone && <><dt><Icon name="phone" size={16} /> Phone</dt><dd><a href={telHref(d.phone)}>{d.phone}</a></dd></>}
+              {d.email && <><dt><Icon name="mail" size={16} /> Email</dt><dd><a href={`mailto:${d.email}`}>{d.email}</a></dd></>}
+              {d.website && <><dt><Icon name="arrow-up-right" size={16} /> Website</dt><dd><a href={d.website} target="_blank" rel="noopener">{siteHost}</a></dd></>}
+              {d.address && <><dt><Icon name="map-pin" size={16} /> Address</dt><dd><a href={mapsUrl} target="_blank" rel="noopener">{d.address}</a></dd></>}
+              {d.hours && (
+                <>
+                  <dt><Icon name="clock" size={16} /> Hours</dt>
+                  <dd>
+                    <table class="hours">
+                      {Object.entries(d.hours).map(([k, v]) => <tr><th scope="row">{k}</th><td>{v}</td></tr>)}
+                    </table>
+                  </dd>
+                </>
+              )}
+              <dt><Icon name="users" size={16} /> Category</dt>
+              <dd><a href={`/directory/${d.category.id}/`}>{category?.data.name}</a>{sub && <> · {sub.data.name}</>}</dd>
+            </dl>
+            {d.sponsorTier && <p class="tag" style="margin-top:var(--s-4)">Chamber sponsor</p>}
+          </div>
+          <p class="small muted member-aside__note">
+            Is this your business? <a href={`/contact/?topic=listing&business=${encodeURIComponent(d.name)}`}>Request an update</a> to your listing.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    {related.length > 0 && (
+      <section class="section band">
+        <div class="container">
+          <div class="section-head section-head--split">
+            <div><h2>More in {category?.data.name}</h2></div>
+            <a href={`/directory/${d.category.id}/`} class="btn btn--secondary">View all <Icon name="arrow-right" size={16} /></a>
+          </div>
+          <div class="grid grid--2">{related.map((m) => <MemberCard member={m} />)}</div>
+        </div>
+      </section>
+    )}
+  </article>
+</Base>
+
+<style>
+  .member-hero { padding-block: var(--s-6) var(--s-7); background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%); border-bottom: 1px solid var(--line); }
+  .member-hero__grid { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 1fr); align-items: center; }
+  @media (min-width: 48rem) { .member-hero__grid { grid-template-columns: 16rem minmax(0, 1fr); } }
+  .member-hero__media { display: grid; place-items: center; aspect-ratio: 1; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; max-width: 16rem; }
+  .member-hero__logo { width: 100%; height: 100%; object-fit: contain; padding: var(--s-5); }
+  .member-hero__photo { width: 100%; height: 100%; object-fit: cover; }
+  .member-hero__initials { font-family: var(--font-display); font-size: 3.5rem; color: var(--brick); }
+  .member-hero h1 { margin-bottom: var(--s-3); }
+  .member-hero__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-5); }
+  .member-body { display: grid; gap: var(--s-7); grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 56rem) { .member-body { grid-template-columns: minmax(0, 1fr) 20rem; } }
+  .member-body__photo { border-radius: var(--radius-lg); margin-top: var(--s-6); }
+  .member-aside__h { font-family: var(--font-text); font-size: var(--fs-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: var(--s-4); }
+  .member-dl { margin: 0; display: grid; gap: var(--s-1) var(--s-3); grid-template-columns: auto minmax(0, 1fr); font-size: var(--fs-sm); }
+  .member-dl dt { display: flex; align-items: center; gap: var(--s-2); color: var(--ink-muted); white-space: nowrap; }
+  .member-dl dt .icon { color: var(--brick); }
+  .member-dl dd { margin: 0 0 var(--s-3); overflow-wrap: anywhere; }
+  .hours { border-collapse: collapse; }
+  .hours th { text-align: left; font-weight: 500; padding-right: var(--s-3); color: var(--ink-soft); white-space: nowrap; }
+  .hours td { white-space: nowrap; }
+  .member-aside__note { margin-top: var(--s-4); }
+</style>

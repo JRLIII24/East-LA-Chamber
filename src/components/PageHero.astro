@@ -1,0 +1,37 @@
+---
+/** Standard interior page header: eyebrow, h1, lede, optional actions and breadcrumb. */
+import Breadcrumb from './Breadcrumb.astro';
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  crumbs?: { label: string; href?: string }[];
+  tone?: 'paper' | 'night' | 'brick';
+  align?: 'left' | 'center';
+}
+const { eyebrow, title, lede, crumbs, tone = 'paper', align = 'left' } = Astro.props;
+---
+<section class:list={['page-hero', `page-hero--${tone}`, { 'band--night': tone === 'night', 'band--brick': tone === 'brick', 'page-hero--center': align === 'center' }]}>
+  <div class="container">
+    {crumbs && <Breadcrumb items={crumbs} />}
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="page-hero__title" set:html={title} />
+    {lede && <p class="lede page-hero__lede">{lede}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-hero { padding-block: var(--s-7) var(--s-7); border-bottom: 1px solid var(--line); }
+  .page-hero--paper { background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%); }
+  .page-hero--night, .page-hero--brick { border-bottom: 0; }
+  .page-hero--night .eyebrow, .page-hero--brick .eyebrow { color: var(--terracotta-soft); }
+  .page-hero--brick .lede { color: rgba(255,255,255,0.85); }
+  .page-hero__title { font-size: var(--fs-3xl); max-width: 18ch; margin-bottom: var(--s-4); }
+  .page-hero__lede { margin-bottom: 0; }
+  .page-hero--center .container { text-align: center; }
+  .page-hero--center .eyebrow { justify-content: center; }
+  .page-hero--center .page-hero__title, .page-hero--center .lede { margin-inline: auto; }
+  .page-hero :global(.page-hero__actions) { display: flex; gap: var(--s-3); flex-wrap: wrap; margin-top: var(--s-6); }
+  .page-hero--center :global(.page-hero__actions) { justify-content: center; }
+</style>

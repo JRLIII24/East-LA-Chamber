@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+---
+<Base title="Accessibility Statement" description="The East Los Angeles Chamber of Commerce is committed to a website everyone can use." noindex>
+  <PageHero title="Accessibility" lede="We want everyone in East LA to be able to use this site." crumbs={[{ label: 'Accessibility' }]} />
+  <section class="section"><div class="container--narrow prose">
+    <p>This website is designed to meet the <a href="https://www.w3.org/WAI/standards-guidelines/wcag/" target="_blank" rel="noopener">Web Content Accessibility Guidelines (WCAG) 2.1</a> at level AA. That includes keyboard navigation, visible focus indicators, text alternatives for images, sufficient color contrast, and content that works with screen readers and at 200% zoom.</p>
+    <h2>Need help or found a problem?</h2>
+    <p>If any part of this site is difficult to use, or you need information in another format (including Spanish), please contact us and we'll help promptly:</p>
+    <p><a href={site.phoneHref}>{site.phone}</a> · <a href={`mailto:${site.email}`}>{site.email}</a></p>
+    <h2>Our office</h2>
+    <p>The chamber office at {site.address.street} is open {site.hours}. Call ahead if you need accommodations for a visit or an event.</p>
+  </div></section>
+</Base>

@@ -1,0 +1,16 @@
+{
+  "title": "Installation Dinners",
+  "date": "2023-09-01",
+  "description": "Celebrating incoming boards at our annual Installation Dinner.",
+  "cover": "./installation-2023.jpg",
+  "photos": [
+    {
+      "src": "./installation-2023.jpg",
+      "alt": "Installation 2023 — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./installation-2022.jpg",
+      "alt": "Installation 2022 — East Los Angeles Chamber of Commerce"
+    }
+  ]
+}

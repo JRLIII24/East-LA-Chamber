@@ -1,0 +1,63 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import { telHref } from '../lib/format';
+
+interface Props { member: CollectionEntry<'members'>; showCategory?: boolean }
+const { member, showCategory = false } = Astro.props;
+const d = member.data;
+const sub = d.subcategory ? await getEntry(d.subcategory) : undefined;
+const cat = await getEntry(d.category);
+const href = `/directory/${d.category.id}/${member.id}/`;
+const initials = d.name.split(/\s+/).slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+---
+<article class="mcard card" data-sub={d.subcategory?.id ?? ''}>
+  <a href={href} class="mcard__media" aria-hidden="true" tabindex="-1">
+    {d.logo ? (
+      <Image src={d.logo} alt="" width={240} height={240} class="mcard__logo" />
+    ) : d.photo ? (
+      <Image src={d.photo} alt="" width={240} height={240} class="mcard__photo" />
+    ) : (
+      <span class="mcard__initials">{initials}</span>
+    )}
+  </a>
+  <div class="mcard__body">
+    <p class="mcard__meta small">
+      {showCategory && cat && <a href={`/directory/${cat.id}/`}>{cat.data.name}</a>}
+      {showCategory && cat && sub && ' · '}
+      {sub && <span>{sub.data.name}</span>}
+    </p>
+    <h3 class="mcard__title"><a href={href}>{d.name}</a></h3>
+    {d.excerpt && <p class="mcard__excerpt small">{d.excerpt}</p>}
+    <div class="mcard__actions">
+      {d.phone && <a href={telHref(d.phone)} class="mcard__phone"><Icon name="phone" size={14} />{d.phone}</a>}
+      <a href={href} class="mcard__more">Details <Icon name="arrow-right" size={14} /></a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .mcard { display: flex; gap: var(--s-4); padding: var(--s-4); }
+  .mcard__media {
+    flex: none; width: 5.5rem; height: 5.5rem; border-radius: var(--radius); overflow: hidden;
+    display: grid; place-items: center; background: var(--paper-2); border: 1px solid var(--line);
+  }
+  .mcard__logo { width: 100%; height: 100%; object-fit: contain; padding: 0.5rem; background: #fff; }
+  .mcard__photo { width: 100%; height: 100%; object-fit: cover; }
+  .mcard__initials { font-family: var(--font-display); font-size: 1.5rem; color: var(--brick); font-weight: 600; }
+  .mcard__body { min-width: 0; display: flex; flex-direction: column; gap: var(--s-1); }
+  .mcard__meta { color: var(--ink-muted); margin: 0; }
+  .mcard__meta a { color: inherit; text-decoration: none; }
+  .mcard__meta a:hover { color: var(--brick); }
+  .mcard__title { font-size: var(--fs-lg); margin: 0; }
+  .mcard__title a { color: var(--ink); text-decoration: none; }
+  .mcard__title a:hover { color: var(--brick); }
+  .mcard__excerpt { margin: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .mcard__actions { display: flex; gap: var(--s-4); margin-top: auto; padding-top: var(--s-2); font-size: var(--fs-sm); flex-wrap: wrap; }
+  .mcard__actions a { display: inline-flex; align-items: center; gap: var(--s-1); text-decoration: none; font-weight: 500; }
+  .mcard__phone { color: var(--ink-soft); }
+  .mcard__more { color: var(--brick); }
+  @media (max-width: 26rem) { .mcard { flex-direction: column; } .mcard__media { width: 100%; height: 7rem; } }
+</style>

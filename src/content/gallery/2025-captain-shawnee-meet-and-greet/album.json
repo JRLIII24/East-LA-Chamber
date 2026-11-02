@@ -1,0 +1,24 @@
+{
+  "title": "Meet & Greet with Captain Shawnee",
+  "date": "2025-06-01",
+  "description": "Community meet & greet with the East LA Sheriff’s Station captain.",
+  "cover": "./captain-shawnee-meet-and-greet-2.jpg",
+  "photos": [
+    {
+      "src": "./captain-shawnee-meet-and-greet-2.jpg",
+      "alt": "Captain Shawnee Meet & Greet — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./captain-shawnee-meet-and-greet-5.jpg",
+      "alt": "Captain Shawnee Meet & Greet — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./captain-shawnee-meet-and-greet-4.jpg",
+      "alt": "Captain Shawnee Meet & Greet — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./captain-shawnee-meet-and-greet.jpg",
+      "alt": "Captain Shawnee Meet & Greet — East Los Angeles Chamber of Commerce"
+    }
+  ]
+}

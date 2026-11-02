@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import MemberCard from '../../components/MemberCard.astro';
+
+const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
+const members = (await getCollection('members')).filter((m) => !m.data.draft);
+const count = (id: string) => members.filter((m) => m.data.category.id === id).length;
+const featured = members.filter((m) => m.data.featured).slice(0, 6);
+---
+<Base
+  title="Member Directory — East Los Angeles Businesses"
+  description={`Browse ${members.length}+ East Los Angeles member businesses by category: restaurants, shops, healthcare, financial services, non-profits and more.`}
+>
+  <PageHero
+    eyebrow="Member directory"
+    title="Find a local business"
+    lede="Every listing is a chamber member — restaurants, shops, clinics, banks and organizations that invest in East Los Angeles."
+    crumbs={[{ label: 'Directory' }]}
+  >
+    <form class="dir-search" action="/directory/" method="get" role="search" data-search>
+      <label for="dir-q" class="visually-hidden">Search the directory</label>
+      <div class="dir-search__row">
+        <Icon name="search" size={20} class="dir-search__icon" />
+        <input id="dir-q" name="q" type="search" class="input dir-search__input" placeholder="Search by name, type of business or keyword…" autocomplete="off" />
+        <button type="submit" class="btn btn--primary">Search</button>
+      </div>
+    </form>
+    <div id="dir-results" class="dir-results" hidden aria-live="polite"></div>
+  </PageHero>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Browse by category</h2>
+      </div>
+      <ul class="grid grid--3 cat-list">
+        {categories.filter((c) => count(c.id) > 0).map((c) => (
+          <li>
+            <a class="card cat-card" href={`/directory/${c.id}/`}>
+              <span class="cat-card__icon"><Icon name={c.data.icon as any} size={22} /></span>
+              <div>
+                <h3>{c.data.name}</h3>
+                <p class="small">{c.data.description}</p>
+              </div>
+              <span class="cat-card__count">{count(c.id)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {featured.length > 0 && (
+    <section class="section band">
+      <div class="container">
+        <div class="section-head"><p class="eyebrow">Featured</p><h2>Member spotlight</h2></div>
+        <div class="grid grid--2">{featured.map((m) => <MemberCard member={m} showCategory />)}</div>
+      </div>
+    </section>
+  )}
+
+  <section class="section band--brick">
+    <div class="container" style="text-align:center">
+      <h2>Not listed yet?</h2>
+      <p class="lede" style="margin-inline:auto;color:rgba(255,255,255,0.85)">Members get a full directory listing, promotion through chamber channels and a seat at the table.</p>
+      <p style="margin-top:var(--s-5)"><a href="/membership/" class="btn btn--primary btn--lg">Join the Chamber <Icon name="arrow-right" size={18} /></a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .dir-search { margin-top: var(--s-6); max-width: 44rem; }
+  .dir-search__row { position: relative; display: flex; gap: var(--s-2); }
+  .dir-search__icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--ink-muted); pointer-events: none; }
+  .dir-search__input { padding-left: 3rem; }
+  .dir-results { margin-top: var(--s-4); max-width: 44rem; }
+  .dir-results :global(.pagefind-ui__result) { padding: var(--s-3) 0; border-top: 1px solid var(--line); }
+  .cat-list { list-style: none; margin: 0; padding: 0; }
+  .cat-card { display: flex; gap: var(--s-4); align-items: start; }
+  .cat-card__icon { flex: none; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: var(--radius); background: var(--blush); color: var(--brick); }
+  .cat-card h3 { font-size: var(--fs-lg); margin-bottom: var(--s-1); }
+  .cat-card p { margin: 0; }
+  .cat-card__count { margin-left: auto; flex: none; font-size: var(--fs-xs); font-weight: 600; color: var(--brick-deep); background: var(--blush); border-radius: var(--radius-pill); padding: 0.25em 0.7em; }
+</style>
+
+<script>
+  // Pagefind search (index is generated at build; falls back to a no-op in dev).
+  const form = document.querySelector<HTMLFormElement>('[data-search]');
+  const input = document.getElementById('dir-q') as HTMLInputElement | null;
+  const out = document.getElementById('dir-results');
+  let pf: any = null;
+  async function load() {
+    if (pf) return pf;
+    const url = '/pagefind/pagefind.js'; // generated at build time by `pagefind --site dist`
+    try { pf = await import(/* @vite-ignore */ url); await pf.options({ baseUrl: '/' }); await pf.init(); } catch { pf = null; }
+    return pf;
+  }
+  async function run(q: string) {
+    if (!out) return;
+    if (!q.trim()) { out.hidden = true; out.innerHTML = ''; return; }
+    const p = await load();
+    if (!p) { out.hidden = false; out.innerHTML = '<p class="small muted">Search is available on the published site.</p>'; return; }
+    const res = await p.search(q, { filters: { type: 'member' } });
+    const items = await Promise.all(res.results.slice(0, 8).map((r: any) => r.data()));
+    out.hidden = false;
+    out.innerHTML = items.length
+      ? items.map((d: any) => `<div class="pagefind-ui__result"><a href="${d.url}"><strong>${d.meta.title}</strong></a><p class="small muted">${d.excerpt}</p></div>`).join('')
+      : `<p class="small muted">No results for “${q.replace(/</g, '&lt;')}”.</p>`;
+  }
+  let t: number;
+  input?.addEventListener('input', () => { clearTimeout(t); t = window.setTimeout(() => run(input.value), 150); });
+  form?.addEventListener('submit', (e) => { e.preventDefault(); run(input?.value ?? ''); });
+  const q = new URLSearchParams(location.search).get('q');
+  if (q && input) { input.value = q; run(q); }
+</script>

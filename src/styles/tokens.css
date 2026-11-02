@@ -13,7 +13,7 @@
   /* Neutrals (warm) */
   --ink: #1a1a1a;
   --ink-soft: #4a4b45;
-  --ink-muted: #76756f;
+  --ink-muted: #66655f; /* 5.2:1 on --paper-2 */
   --paper: #fbf7f2;
   --paper-2: #f3ebe3;
   --blush: #fff6f4;

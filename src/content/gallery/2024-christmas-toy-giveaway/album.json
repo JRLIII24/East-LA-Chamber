@@ -1,0 +1,16 @@
+{
+  "title": "Christmas Toy Giveaway 2024",
+  "date": "2024-12-14",
+  "description": "Holiday toy giveaway for East LA families.",
+  "cover": "./christmas-toy-give-away.jpg",
+  "photos": [
+    {
+      "src": "./christmas-toy-give-away.jpg",
+      "alt": "Christmas Toy Give Away — East Los Angeles Chamber of Commerce"
+    },
+    {
+      "src": "./christmas-toy-give-away-5.jpg",
+      "alt": "Christmas Toy Give Away — East Los Angeles Chamber of Commerce"
+    }
+  ]
+}

@@ -40,14 +40,16 @@ const { headerTheme = 'light', ...seo } = Astro.props;
     <Footer />
     <script>
       // Reveal-on-scroll. Content is visible without JS (see global.css).
+      // Hidden state is opt-in and self-healing: if anything goes wrong, everything is shown after 1.5s.
       const els = document.querySelectorAll('[data-reveal]');
-      if ('IntersectionObserver' in window && els.length) {
+      const root = document.documentElement;
+      if ('IntersectionObserver' in window && els.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        root.classList.add('js-reveal');
         const io = new IntersectionObserver((entries) => {
           for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
-        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        }, { threshold: 0, rootMargin: '0px 0px -5% 0px' });
         els.forEach((el) => io.observe(el));
-      } else {
-        els.forEach((el) => el.classList.add('is-in'));
+        setTimeout(() => root.classList.remove('js-reveal'), 1500);
       }
     </script>
   </body>

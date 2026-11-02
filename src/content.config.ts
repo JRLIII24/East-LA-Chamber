@@ -108,7 +108,11 @@ const sponsors = defineCollection({
 
 /** Gallery albums — one JSON file per album with its photos. */
 const albums = defineCollection({
-  loader: glob({ pattern: '**/album.json', base: './src/content/gallery' }),
+  loader: glob({
+    pattern: '**/album.json',
+    base: './src/content/gallery',
+    generateId: ({ entry }) => entry.replace(/\/album\.json$/, ''), // folder name = album id
+  }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),

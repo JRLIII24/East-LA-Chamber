@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { fmtDate } from '../../lib/format';
+
+const albums = (await getCollection('albums')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const total = albums.reduce((n, a) => n + a.data.photos.length, 0);
+---
+<Base title="Photo Gallery — East LA Community & Events" description={`${total} photos from East Los Angeles Chamber events, celebrations and community programs.`}>
+  <PageHero eyebrow="Gallery" title="The true essence of East Los Angeles" lede="Resilient, creative, family-built and full of opportunity. These are the businesses we build, the culture we protect and the events that bring people together." crumbs={[{ label: 'Gallery' }]} />
+  <section class="section">
+    <div class="container">
+      <ul class="grid grid--3 albums">
+        {albums.map((a) => (
+          <li>
+            <a class="album" href={`/gallery/${a.id}/`}>
+              <Image src={a.data.cover} alt="" width={720} height={480} class="album__img" />
+              <span class="album__cap">
+                <strong>{a.data.title}</strong>
+                <span class="small">{fmtDate(a.data.date, { day: undefined })} · {a.data.photos.length} photos</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .albums { list-style: none; margin: 0; padding: 0; }
+  .album { display: block; position: relative; border-radius: var(--radius-lg); overflow: hidden; color: #fff; text-decoration: none; box-shadow: var(--shadow-sm); }
+  .album__img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; transition: transform 500ms var(--ease); }
+  .album:hover .album__img { transform: scale(1.04); }
+  .album__cap { position: absolute; inset: auto 0 0 0; padding: var(--s-6) var(--s-4) var(--s-4); display: grid; background: linear-gradient(180deg, transparent, rgba(20,18,16,0.85)); }
+</style>

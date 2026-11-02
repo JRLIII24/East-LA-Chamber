@@ -1,0 +1,127 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import { site } from '../../data/site';
+
+const benefits = [
+  { icon: 'store', title: 'A listing in the member directory', text: 'Your business is listed so residents, partners and visitors can find you — with your logo, hours, phone and a link to your site.' },
+  { icon: 'megaphone', title: 'Visibility and promotion', text: 'Chamber highlights, social media features, sponsorship placement and the newsletter put your name in front of East LA.' },
+  { icon: 'users', title: 'Network with local leaders', text: 'Mixers, breakfasts and forums with business owners, county officials and elected representatives.' },
+  { icon: 'sparkles', title: 'Sponsorship opportunities', text: 'Premium placement on our website, events and materials for businesses that want top visibility.' },
+  { icon: 'calendar', title: 'Community events and initiatives', text: 'Join programs that support small business growth — from candidate forums to the holiday toy giveaway.' },
+  { icon: 'handshake', title: 'A stronger local economy', text: 'Your membership funds advocacy and programs that help every East LA business thrive.' },
+] as const;
+
+// TODO(chamber): confirm tiers and annual dues
+const tiers = [
+  { name: 'Small business', price: 'Contact us', who: '1–10 employees, sole proprietors, home-based', includes: ['Directory listing', 'Event invitations', 'Newsletter features', 'Member-to-member referrals'] },
+  { name: 'Business', price: 'Contact us', who: '11–50 employees', includes: ['Everything in Small business', 'Logo in directory', 'Ribbon-cutting support', 'Discounted event sponsorship'], featured: true },
+  { name: 'Corporate & non-profit', price: 'Contact us', who: 'Larger employers, agencies and organizations', includes: ['Everything in Business', 'Featured directory placement', 'Sponsorship recognition', 'Board engagement opportunities'] },
+];
+
+const faqs = [
+  { q: 'Do I need to be located in East Los Angeles?', a: 'No. Many members serve East LA from neighboring cities. If you do business here or want to, you’re welcome.' },
+  { q: 'How long does approval take?', a: 'Our team reviews applications within 1–2 business days and will contact you to complete payment and set up your listing.' },
+  { q: 'Can I update my directory listing later?', a: 'Yes — email us any time with new hours, photos, a logo or a description and we’ll update it.' },
+  { q: 'Is there a membership for non-profits?', a: 'Yes. Non-profits and community organizations have a dedicated tier. Contact us for details.' },
+];
+const faqLd = {
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+<Base title="Membership — Join the East Los Angeles Chamber of Commerce" description="Become a member of the East LA Chamber of Commerce. Get listed in the directory, promote your business, network with local leaders and support the local economy." jsonLd={faqLd}>
+  <PageHero tone="night" eyebrow="Membership" title="Your business belongs here." lede="Join a network that has stood up for East Los Angeles business owners since 1922. Membership is open to businesses, non-profits and professionals of every size." crumbs={[{ label: 'Membership' }]}>
+    <div class="page-hero__actions">
+      <a href="/membership/apply/" class="btn btn--primary btn--lg">Apply online <Icon name="arrow-right" size={18} /></a>
+      <a href="#benefits" class="btn btn--secondary btn--lg">Why join?</a>
+    </div>
+  </PageHero>
+
+  <section class="section" id="benefits">
+    <div class="container">
+      <div class="section-head"><p class="eyebrow">Benefits</p><h2>What members get</h2></div>
+      <ul class="grid grid--3 benefits">
+        {benefits.map((b) => (
+          <li class="card">
+            <span class="benefit__icon"><Icon name={b.icon} size={22} /></span>
+            <h3>{b.title}</h3>
+            <p class="small">{b.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section band">
+    <div class="container">
+      <div class="section-head"><p class="eyebrow">Levels</p><h2>Membership levels</h2><p class="lede">Dues are annual and scaled to the size of your organization. Contact us for current rates.</p></div>
+      <div class="grid grid--3 tiers">
+        {tiers.map((t) => (
+          <div class:list={['card', 'tier', { 'tier--featured': t.featured }]}>
+            {t.featured && <p class="tag tier__badge">Most popular</p>}
+            <h3>{t.name}</h3>
+            <p class="tier__price">{t.price}</p>
+            <p class="small muted">{t.who}</p>
+            <ul class="tier__list small">{t.includes.map((i) => <li><Icon name="check" size={16} /> {i}</li>)}</ul>
+            <a href="/membership/apply/" class:list={['btn', t.featured ? 'btn--primary' : 'btn--secondary']}>Apply</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container how">
+      <div class="section-head"><p class="eyebrow">How it works</p><h2>Three steps to membership</h2></div>
+      <ol class="steps">
+        <li><span class="steps__n">1</span><div><h3>Apply online</h3><p class="small">Five minutes. Tell us about your business and which category you belong in.</p></div></li>
+        <li><span class="steps__n">2</span><div><h3>We'll be in touch</h3><p class="small">A team member confirms your level, collects dues and gathers your logo and details.</p></div></li>
+        <li><span class="steps__n">3</span><div><h3>You're listed</h3><p class="small">Your directory page goes live and you're invited to the next event.</p></div></li>
+      </ol>
+      <p><a href="/membership/apply/" class="btn btn--primary btn--lg">Start your application <Icon name="arrow-right" size={18} /></a> <span class="small muted" style="margin-left:var(--s-3)">Prefer paper? <a href="/membership/apply/#pdf">Download the PDF application</a>.</span></p>
+    </div>
+  </section>
+
+  <section class="section band--blush">
+    <div class="container--narrow">
+      <div class="section-head"><h2>Common questions</h2></div>
+      {faqs.map((f) => (
+        <details class="faq">
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+      <p class="small muted" style="margin-top:var(--s-6)">Still have questions? Call <a href={site.phoneHref}>{site.phone}</a> or email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .benefits { list-style: none; margin: 0; padding: 0; }
+  .benefit__icon { display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: var(--radius); background: var(--blush); color: var(--brick); margin-bottom: var(--s-4); }
+  .benefits h3 { font-size: var(--fs-lg); }
+  .benefits p { margin: 0; }
+  .tier { display: flex; flex-direction: column; gap: var(--s-2); position: relative; }
+  .tier--featured { border-color: var(--brick); box-shadow: var(--shadow); }
+  .tier__badge { position: absolute; top: -0.9rem; left: var(--s-5); background: var(--brick); color: #fff; border-color: var(--brick); }
+  .tier h3 { margin: 0; }
+  .tier__price { font-family: var(--font-display); font-size: var(--fs-xl); color: var(--brick-deep); margin: 0; }
+  .tier__list { list-style: none; padding: 0; margin: var(--s-3) 0 var(--s-5); display: grid; gap: var(--s-2); color: var(--ink-soft); }
+  .tier__list li { display: flex; gap: var(--s-2); align-items: start; }
+  .tier__list .icon { color: var(--brick); flex: none; margin-top: 0.2em; }
+  .tier .btn { margin-top: auto; align-self: start; }
+  .steps { list-style: none; margin: 0 0 var(--s-7); padding: 0; display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+  .steps li { display: flex; gap: var(--s-4); }
+  .steps__n { flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--brick); color: #fff; font-family: var(--font-display); font-size: 1.25rem; }
+  .steps h3 { font-size: var(--fs-lg); margin-bottom: var(--s-1); }
+  .steps p { margin: 0; }
+  .faq { border-top: 1px solid var(--line); padding: var(--s-4) 0; }
+  .faq:last-of-type { border-bottom: 1px solid var(--line); }
+  .faq summary { cursor: pointer; font-weight: 600; font-size: var(--fs-md); list-style: none; display: flex; justify-content: space-between; gap: var(--s-4); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: '+'; color: var(--brick); font-weight: 400; font-size: 1.4em; line-height: 1; }
+  .faq[open] summary::after { content: '–'; }
+  .faq p { margin: var(--s-3) 0 0; color: var(--ink-soft); }
+</style>

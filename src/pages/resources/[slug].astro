@@ -1,0 +1,75 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import Icon from '../../components/Icon.astro';
+import { fmtDate } from '../../lib/format';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const items = await getCollection('resources');
+  return items.map((r) => ({ params: { slug: r.id }, props: { item: r } }));
+}
+const { item } = Astro.props;
+const { Content, headings } = await render(item);
+const toc = headings.filter((h) => h.depth <= 3);
+const others = (await getCollection('resources')).filter((r) => r.id !== item.id).sort((a, b) => a.data.order - b.data.order);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: item.data.title,
+  description: item.data.summary,
+  dateModified: item.data.updated.toISOString(),
+  author: { '@type': 'Organization', name: site.name },
+  publisher: { '@id': `${site.url}/#organization` },
+};
+---
+<Base title={item.data.title} description={item.data.summary} type="article" jsonLd={jsonLd}>
+  <article data-pagefind-body data-pagefind-filter="type:resource">
+    <header class="art-head">
+      <div class="container--narrow">
+        <Breadcrumb items={[{ label: 'Resources', href: '/resources/' }, { label: item.data.title }]} />
+        <p class="eyebrow">{item.data.audience === 'everyone' ? 'Community resource' : `For ${item.data.audience}`}</p>
+        <h1>{item.data.title}</h1>
+        <p class="lede">{item.data.summary}</p>
+        <p class="small muted art-head__meta"><Icon name="clock" size={14} /> Last reviewed {fmtDate(item.data.updated)}</p>
+      </div>
+    </header>
+
+    <div class="container--narrow section art-body">
+      {toc.length > 2 && (
+        <nav class="toc" aria-label="On this page">
+          <p class="toc__h">On this page</p>
+          <ol>{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol>
+        </nav>
+      )}
+      <div class="prose">
+        <Content />
+      </div>
+      <p class="small muted art-note">This guide is maintained by the chamber as a convenience. For official information, always check the linked agency.</p>
+    </div>
+  </article>
+
+  <section class="section band">
+    <div class="container">
+      <h2 class="small" style="font-family:var(--font-text);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:var(--s-4)">More resources</h2>
+      <ul class="grid grid--3 more">
+        {others.map((r) => <li><a class="card" href={`/resources/${r.id}/`}><h3 style="font-size:var(--fs-lg)">{r.data.title}</h3><p class="small">{r.data.summary}</p></a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .art-head { padding-block: var(--s-6) var(--s-6); background: linear-gradient(180deg, var(--paper-2) 0%, var(--paper) 100%); border-bottom: 1px solid var(--line); }
+  .art-head__meta { display: inline-flex; align-items: center; gap: var(--s-2); margin-top: var(--s-4); }
+  .art-body { padding-top: var(--s-6); }
+  .toc { margin-bottom: var(--s-6); padding: var(--s-4) var(--s-5); background: var(--blush); border-radius: var(--radius); font-size: var(--fs-sm); }
+  .toc__h { font-weight: 600; margin-bottom: var(--s-2); }
+  .toc ol { margin: 0; padding-left: 1.2em; }
+  .toc a { text-decoration: none; }
+  .prose :global(h3) { font-size: var(--fs-lg); }
+  .prose :global(a) { overflow-wrap: anywhere; }
+  .art-note { margin-top: var(--s-7); padding-top: var(--s-4); border-top: 1px solid var(--line); }
+  .more { list-style: none; margin: 0; padding: 0; }
+</style>
