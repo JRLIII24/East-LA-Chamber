@@ -1,0 +1,207 @@
+[
+  {
+    "id": "animal-welfare",
+    "name": "Animal Welfare",
+    "category": "other-services"
+  },
+  {
+    "id": "apparel-sporting-goods",
+    "name": "Apparel & Sporting Goods",
+    "category": "retail-specialty-shops"
+  },
+  {
+    "id": "auto-body-repair",
+    "name": "Auto Body & Repair",
+    "category": "automotive-services"
+  },
+  {
+    "id": "auto-glass",
+    "name": "Auto Glass",
+    "category": "automotive-services"
+  },
+  {
+    "id": "bakeries",
+    "name": "Bakeries",
+    "category": "food-beverage"
+  },
+  {
+    "id": "banks",
+    "name": "Banks",
+    "category": "financial-services"
+  },
+  {
+    "id": "chiropractic-services",
+    "name": "Chiropractic Services",
+    "category": "healthcare-services"
+  },
+  {
+    "id": "churches",
+    "name": "Churches",
+    "category": "religious-institutions"
+  },
+  {
+    "id": "colleges-vocational-schools",
+    "name": "Colleges & Vocational Schools",
+    "category": "education-community-programs"
+  },
+  {
+    "id": "community-health-centers",
+    "name": "Community Health Centers",
+    "category": "healthcare-services"
+  },
+  {
+    "id": "consulting-business-development",
+    "name": "Consulting & Business Development",
+    "category": "professional-business-services"
+  },
+  {
+    "id": "dental-services",
+    "name": "Dental Services",
+    "category": "healthcare-services"
+  },
+  {
+    "id": "digital-marketing",
+    "name": "Digital Marketing",
+    "category": "professional-business-services"
+  },
+  {
+    "id": "electronics-audio",
+    "name": "Electronics & Audio",
+    "category": "retail-specialty-shops"
+  },
+  {
+    "id": "energy-services",
+    "name": "Energy Services",
+    "category": "utilities-infrastructure"
+  },
+  {
+    "id": "event-venues",
+    "name": "Event Venues",
+    "category": "other-services"
+  },
+  {
+    "id": "furniture-appliances",
+    "name": "Furniture & Appliances",
+    "category": "retail-specialty-shops"
+  },
+  {
+    "id": "gas-stations",
+    "name": "Gas Stations",
+    "category": "automotive-services"
+  },
+  {
+    "id": "grocery-stores",
+    "name": "Grocery Stores",
+    "category": "retail-specialty-shops"
+  },
+  {
+    "id": "hardware-stores",
+    "name": "Hardware Stores",
+    "category": "retail-specialty-shops"
+  },
+  {
+    "id": "health-insurance",
+    "name": "Health Insurance",
+    "category": "healthcare-services"
+  },
+  {
+    "id": "hospitals",
+    "name": "Hospitals",
+    "category": "healthcare-services"
+  },
+  {
+    "id": "infrastructure-engineering",
+    "name": "Infrastructure & Engineering",
+    "category": "utilities-infrastructure"
+  },
+  {
+    "id": "insurance",
+    "name": "Insurance",
+    "category": "financial-services"
+  },
+  {
+    "id": "investment-financial-planning",
+    "name": "Investment & Financial Planning",
+    "category": "financial-services"
+  },
+  {
+    "id": "jewelry-watches",
+    "name": "Jewelry & Watches",
+    "category": "retail-specialty-shops"
+  },
+  {
+    "id": "legal-services",
+    "name": "Legal Services",
+    "category": "professional-business-services"
+  },
+  {
+    "id": "lending-pawn",
+    "name": "Lending & Pawn",
+    "category": "financial-services"
+  },
+  {
+    "id": "memorial-funeral-services",
+    "name": "Memorial & Funeral Services",
+    "category": "other-services"
+  },
+  {
+    "id": "party-supplies",
+    "name": "Party Supplies",
+    "category": "retail-specialty-shops"
+  },
+  {
+    "id": "pharmacies",
+    "name": "Pharmacies",
+    "category": "healthcare-services"
+  },
+  {
+    "id": "publishing-media",
+    "name": "Publishing & Media",
+    "category": "media-arts"
+  },
+  {
+    "id": "real-estate",
+    "name": "Real Estate",
+    "category": "professional-business-services"
+  },
+  {
+    "id": "restaurants",
+    "name": "Restaurants",
+    "category": "food-beverage"
+  },
+  {
+    "id": "schools",
+    "name": "Schools",
+    "category": "education-community-programs"
+  },
+  {
+    "id": "social-community-services",
+    "name": "Social & Community Services",
+    "category": "non-profit-community-organizations"
+  },
+  {
+    "id": "specialty-food-desserts",
+    "name": "Specialty Food & Desserts",
+    "category": "food-beverage"
+  },
+  {
+    "id": "tax-services",
+    "name": "Tax Services",
+    "category": "financial-services"
+  },
+  {
+    "id": "telecommunications",
+    "name": "Telecommunications",
+    "category": "other-services"
+  },
+  {
+    "id": "water-services",
+    "name": "Water Services",
+    "category": "utilities-infrastructure"
+  },
+  {
+    "id": "youth-community-centers",
+    "name": "Youth & Community Centers",
+    "category": "education-community-programs"
+  }
+]

@@ -1,0 +1,9 @@
+---
+name: "Familia Unida"
+category: "non-profit-community-organizations"
+subcategory: "social-community-services"
+excerpt: "Incorporated as a grass roots 501-c3 nonprofit in 1998 as the first MS organization in the United States to outreach to the Spanish speaking community."
+phone: "(323) 418-2667"
+---
+
+Incorporated as a grass roots 501-c3 nonprofit in 1998 as the first MS organization in the United States to outreach to the Spanish speaking community. Familia Unida Living with Multiple Sclerosis, e.g. Familia Unida; was founded in the early 90’s by Irma Resendez after her diagnosis of multiple sclerosis when she was 28 years old and learned at that time there were no services available or accessible for the Spanish speaking MS community. Irma experienced paralysis to her lower extremities and was confined to a wheelchair for almost a year. The Resendez home became the casa of hope where Irma and her family shared love with their new MS friends, learned about free resources, shared tears and hugs and especially reminded each other that they were not alone. Resendez went back to school to obtain her Masters in Social Work then incorporated Familia Unida as a non profit organization. Our office has been located in the East Los Angeles County- Centro Maravilla Center, for the past 17 years! The organization was initially founded to provide support services and resources to the Spanish speaking living with Multiple Sclerosis, targeting vulnerable, low-income and immigrants living with MS in the County of Los Angeles. However with the large demand for services in the Greater Los Angeles Area, and with Familia Unidas’ open door policy more and more individuals arrived for help. Familia Unidas’ reputation grew among the community as the “one stop for information and referrals” with a cultural sensitive approach.

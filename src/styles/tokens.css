@@ -1,0 +1,81 @@
+/* ------------------------------------------------------------------
+   Design tokens — the only file to edit for colours, type and spacing.
+   ------------------------------------------------------------------ */
+:root {
+  /* Brand */
+  --brick: #8f3f2a;
+  --brick-deep: #6e2d1f;
+  --brick-ink: #4f1f14;
+  --terracotta: #c06b55;
+  --terracotta-soft: #e7b8a9;
+  --gold: #c9a227;
+
+  /* Neutrals (warm) */
+  --ink: #1a1a1a;
+  --ink-soft: #4a4b45;
+  --ink-muted: #76756f;
+  --paper: #fbf7f2;
+  --paper-2: #f3ebe3;
+  --blush: #fff6f4;
+  --line: #e5ddd4;
+  --line-strong: #cfc4b8;
+  --night: #141210;
+  --night-2: #221e1a;
+  --on-night: #f6efe8;
+  --on-night-soft: rgba(246, 239, 232, 0.72);
+
+  /* Semantic */
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --accent: var(--brick);
+  --accent-hover: var(--brick-deep);
+  --focus: #1f5fbf;
+
+  /* Type */
+  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-text: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --fs-xs: 0.8125rem;   /* 13 */
+  --fs-sm: 0.875rem;    /* 14 */
+  --fs-base: 1.0625rem; /* 17 */
+  --fs-md: 1.1875rem;   /* 19 */
+  --fs-lg: 1.375rem;    /* 22 */
+  --fs-xl: clamp(1.5rem, 1.2rem + 1.2vw, 1.875rem);
+  --fs-2xl: clamp(1.875rem, 1.4rem + 1.8vw, 2.5rem);
+  --fs-3xl: clamp(2.25rem, 1.6rem + 2.8vw, 3.5rem);
+  --fs-hero: clamp(2.75rem, 1.8rem + 4.6vw, 5.5rem);
+
+  --lh-tight: 1.08;
+  --lh-snug: 1.25;
+  --lh-body: 1.6;
+
+  /* Spacing */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --section: clamp(3.5rem, 3rem + 4vw, 7rem);
+
+  /* Layout */
+  --container: 76rem;
+  --container-narrow: 46rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+
+  /* Shape & elevation */
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(26, 18, 12, 0.06), 0 1px 1px rgba(26, 18, 12, 0.04);
+  --shadow: 0 10px 30px -12px rgba(26, 18, 12, 0.25);
+  --shadow-lg: 0 30px 60px -20px rgba(26, 18, 12, 0.35);
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 220ms;
+}

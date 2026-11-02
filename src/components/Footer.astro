@@ -1,0 +1,89 @@
+---
+import { site, nav, cta } from '../data/site';
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import NewsletterForm from './NewsletterForm.astro';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer band--night">
+  <div class="container">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <Logo class="site-footer__mark" />
+        <p class="site-footer__name">East Los Angeles<br />Chamber of Commerce</p>
+        <p class="site-footer__since">Serving East LA since {site.founded}</p>
+      </div>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__h">Explore</h2>
+        <ul class="site-footer__links">
+          {nav.map((i) => <li><a href={i.href}>{i.label}</a></li>)}
+          <li><a href={cta.href}>{cta.label}</a></li>
+        </ul>
+      </div>
+
+      <div class="site-footer__col">
+        <h2 class="site-footer__h">Visit us</h2>
+        <address class="site-footer__address">
+          <a href={site.address.mapsUrl} target="_blank" rel="noopener">
+            <Icon name="map-pin" size={16} />
+            <span>{site.address.street}<br />{site.address.city}, {site.address.state} {site.address.zip}</span>
+          </a>
+          <a href={site.phoneHref}><Icon name="phone" size={16} /><span>{site.phone}</span></a>
+          <a href={`mailto:${site.email}`}><Icon name="mail" size={16} /><span>{site.email}</span></a>
+          <span><Icon name="clock" size={16} /><span>{site.hours}</span></span>
+        </address>
+      </div>
+
+      <div class="site-footer__col site-footer__col--wide">
+        <h2 class="site-footer__h">Stay in the loop</h2>
+        <p class="site-footer__p">Events, member news and resources for East LA — about twice a month.</p>
+        <NewsletterForm />
+        <ul class="site-footer__social" aria-label="Social media">
+          <li><a href={site.social.facebook} target="_blank" rel="noopener"><Icon name="facebook" size={18} label="Facebook" /></a></li>
+          <li><a href={site.social.instagram} target="_blank" rel="noopener"><Icon name="instagram" size={18} label="Instagram" /></a></li>
+          <li><a href={site.social.x} target="_blank" rel="noopener"><Icon name="x-social" size={18} label="X (formerly Twitter)" /></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p>© {year} {site.name}. All rights reserved.</p>
+      <p><a href="/privacy/">Privacy</a> · <a href="/accessibility/">Accessibility</a></p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { padding-block: var(--s-8) var(--s-6); margin-top: auto; }
+  .site-footer__top {
+    display: grid; gap: var(--s-7) var(--s-6);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  }
+  .site-footer__col--wide { grid-column: span 2; }
+  @media (max-width: 40rem) { .site-footer__col--wide { grid-column: span 1; } }
+  .site-footer__mark { width: 4rem; height: 4rem; margin-bottom: var(--s-4); }
+  .site-footer__name { font-family: var(--font-display); font-size: var(--fs-lg); line-height: 1.2; margin-bottom: var(--s-2); }
+  .site-footer__since { color: var(--gold); font-size: var(--fs-xs); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+  .site-footer__h { font-family: var(--font-text); font-size: var(--fs-xs); letter-spacing: 0.12em; text-transform: uppercase; color: var(--on-night-soft); margin-bottom: var(--s-4); font-weight: 600; }
+  .site-footer__links { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+  .site-footer__links a, .site-footer__address a { color: var(--on-night); text-decoration: none; }
+  .site-footer__links a:hover, .site-footer__address a:hover { color: var(--terracotta-soft); }
+  .site-footer__address { font-style: normal; display: grid; gap: var(--s-3); }
+  .site-footer__address > * { display: flex; gap: var(--s-2); align-items: start; }
+  .site-footer__address .icon { flex: none; margin-top: 0.3em; color: var(--terracotta); }
+  .site-footer__p { color: var(--on-night-soft); font-size: var(--fs-sm); margin-bottom: var(--s-4); }
+  .site-footer__social { list-style: none; margin: var(--s-5) 0 0; padding: 0; display: flex; gap: var(--s-3); }
+  .site-footer__social a {
+    display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.18); color: var(--on-night);
+    transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .site-footer__social a:hover { background: var(--brick); border-color: var(--brick); color: #fff; }
+  .site-footer__bottom {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--s-3);
+    margin-top: var(--s-8); padding-top: var(--s-5); border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: var(--fs-sm); color: var(--on-night-soft);
+  }
+  .site-footer__bottom a { color: inherit; }
+</style>

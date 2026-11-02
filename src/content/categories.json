@@ -1,0 +1,15 @@
+[
+  { "id": "food-beverage", "name": "Food & Beverage", "description": "Restaurants, bakeries, ice cream and specialty food from East LA's kitchens.", "icon": "store", "order": 1 },
+  { "id": "retail-specialty-shops", "name": "Retail & Specialty Shops", "description": "Local shops, boutiques, furniture and everyday essentials.", "icon": "store", "order": 2 },
+  { "id": "professional-business-services", "name": "Professional & Business Services", "description": "Legal, real estate, consulting, printing and services for business owners.", "icon": "file-text", "order": 3 },
+  { "id": "healthcare-services", "name": "Healthcare Services", "description": "Clinics, hospitals, dental and community health centers.", "icon": "sparkles", "order": 4 },
+  { "id": "financial-services", "name": "Financial Services", "description": "Banks, credit unions, insurance and financial planning.", "icon": "handshake", "order": 5 },
+  { "id": "education-community-programs", "name": "Education & Community Programs", "description": "Schools, youth programs, training and community education.", "icon": "users", "order": 6 },
+  { "id": "non-profit-community-organizations", "name": "Non-Profit & Community Organizations", "description": "Organizations serving East Los Angeles residents and families.", "icon": "users", "order": 7 },
+  { "id": "automotive-services", "name": "Automotive Services", "description": "Repair shops, body work, tires and auto sales.", "icon": "store", "order": 8 },
+  { "id": "religious-institutions", "name": "Religious Institutions", "description": "Churches and faith communities in East LA.", "icon": "users", "order": 9 },
+  { "id": "media-arts", "name": "Media & Arts", "description": "Creative studios, media and the arts.", "icon": "image", "order": 10 },
+  { "id": "technology-services", "name": "Technology Services", "description": "IT, web and technology providers.", "icon": "sparkles", "order": 11 },
+  { "id": "utilities-infrastructure", "name": "Utilities & Infrastructure", "description": "Water, gas, energy and infrastructure partners.", "icon": "store", "order": 12 },
+  { "id": "other-services", "name": "Other Services", "description": "Security, funeral services, telecommunications and everything else.", "icon": "store", "order": 13 }
+]

@@ -1,0 +1,280 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { site, cta } from '../data/site';
+import heroPhoto from '../assets/brand/welcome-sign.jpg'; // PHOTO: hero — replace with a real event/street photo
+
+const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
+const members = (await getCollection('members')).filter((m) => !m.data.draft);
+const sponsors = await getCollection('sponsors');
+const now = new Date();
+const upcoming = (await getCollection('events'))
+  .filter((e) => !e.data.draft && e.data.start >= now)
+  .sort((a, b) => a.data.start.getTime() - b.data.start.getTime())
+  .slice(0, 3);
+const resources = (await getCollection('resources')).sort((a, b) => a.data.order - b.data.order).slice(0, 4);
+
+const countBy = (id: string) => members.filter((m) => m.data.category.id === id).length;
+const featuredCats = categories.filter((c) => countBy(c.id) > 0).slice(0, 6);
+
+// TODO(chamber): confirm these figures
+const stats = [
+  { value: `${members.length}+`, label: 'Member businesses' },
+  { value: `${now.getFullYear() - site.founded}`, label: 'Years serving East LA' },
+  { value: '100+', label: 'Events each year' },
+  { value: `${sponsors.length || 12}`, label: 'Sponsor partners' },
+];
+
+const fmtDate = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+const fmtTime = (d: Date) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  url: site.url,
+  name: site.name,
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: `${site.url}/directory/?q={search_term_string}`,
+    'query-input': 'required name=search_term_string',
+  },
+};
+---
+<Base
+  title={site.name}
+  description="The East Los Angeles Chamber of Commerce connects local businesses, residents and partners through events, resources and a member directory. Serving East LA since 1922."
+  jsonLd={jsonLd}
+>
+  <!-- Hero -->
+  <section class="hero">
+    <Image src={heroPhoto} alt="" widths={[640, 960, 1440, 1920]} sizes="100vw" class="hero__img" loading="eager" fetchpriority="high" />
+    <div class="hero__scrim"></div>
+    <div class="container hero__content">
+      <p class="eyebrow hero__eyebrow">East Los Angeles · Est. {site.founded}</p>
+      <h1 class="hero__title">Connecting people.<br /><em>Building community.</em></h1>
+      <p class="hero__lede">
+        We're the voice of business in East Los Angeles — connecting local owners, residents and partners through events, advocacy and resources.
+      </p>
+      <div class="hero__actions">
+        <a href={cta.href} class="btn btn--primary btn--lg">{cta.label} <Icon name="arrow-right" size={18} /></a>
+        <a href="/directory/" class="btn btn--secondary btn--lg">Find a business</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats band--night">
+    <div class="container">
+      <ul class="stats__list">
+        {stats.map((s) => (
+          <li>
+            <span class="stats__value">{s.value}</span>
+            <span class="stats__label">{s.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Events -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Events</p>
+          <h2>What's coming up</h2>
+          <p class="lede">Mixers, workshops, community celebrations and more. Everyone is welcome.</p>
+        </div>
+        <a href="/events/" class="btn btn--secondary">All events <Icon name="arrow-right" size={16} /></a>
+      </div>
+      {upcoming.length ? (
+        <ul class="event-list grid grid--3" data-reveal>
+          {upcoming.map((e) => (
+            <li>
+              <a class="card event-card" href={`/events/${e.id}/`}>
+                <time class="event-card__date" datetime={e.data.start.toISOString()}>
+                  <span class="event-card__month">{e.data.start.toLocaleDateString('en-US', { month: 'short' })}</span>
+                  <span class="event-card__day">{e.data.start.getDate()}</span>
+                </time>
+                <div>
+                  <h3>{e.data.title}</h3>
+                  <p class="small">{e.data.allDay ? fmtDate(e.data.start) : `${fmtDate(e.data.start)} · ${fmtTime(e.data.start)}`} · {e.data.location.name}</p>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="card empty" data-reveal>
+          <Icon name="calendar" size={28} />
+          <p><strong>New events are being scheduled.</strong> Follow us on <a href={site.social.instagram} target="_blank" rel="noopener">Instagram</a> or <a href="#newsletter-email">subscribe</a> to hear first.</p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- Directory -->
+  <section class="section band">
+    <div class="container">
+      <div class="section-head section-head--split" data-reveal>
+        <div>
+          <p class="eyebrow">Member directory</p>
+          <h2>Shop local. Hire local.</h2>
+          <p class="lede">{members.length}+ East LA businesses and organizations, from family restaurants to hospitals and banks.</p>
+        </div>
+        <a href="/directory/" class="btn btn--secondary">Browse all categories <Icon name="arrow-right" size={16} /></a>
+      </div>
+      <ul class="grid grid--3 cat-grid" data-reveal>
+        {featuredCats.map((c) => (
+          <li>
+            <a class="card cat-card" href={`/directory/${c.id}/`}>
+              <span class="cat-card__icon"><Icon name={c.data.icon as any} size={22} /></span>
+              <h3>{c.data.name}</h3>
+              <p class="small">{countBy(c.id)} {countBy(c.id) === 1 ? 'member' : 'members'}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Membership -->
+  <section class="section band--brick membership">
+    <div class="container membership__inner">
+      <div data-reveal>
+        <p class="eyebrow membership__eyebrow">Membership</p>
+        <h2>Your business belongs here.</h2>
+        <p class="lede membership__lede">Join a network that has stood up for East LA business owners for over a century.</p>
+        <a href={cta.href} class="btn btn--primary btn--lg">See membership benefits <Icon name="arrow-right" size={18} /></a>
+      </div>
+      <ul class="membership__list" data-reveal>
+        <li><Icon name="check" size={18} /> A listing in the member directory</li>
+        <li><Icon name="check" size={18} /> Promotion through chamber channels and events</li>
+        <li><Icon name="check" size={18} /> Networking with local leaders and officials</li>
+        <li><Icon name="check" size={18} /> Sponsorship and visibility opportunities</li>
+        <li><Icon name="check" size={18} /> A seat at the table on issues affecting East LA</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Sponsors -->
+  {sponsors.length > 0 && (
+    <section class="section--tight section">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <p class="eyebrow">Our sponsors</p>
+          <h2>Partners investing in East LA</h2>
+        </div>
+        <ul class="logo-wall" data-reveal>
+          {sponsors.map((s) => (
+            <li>
+              {s.data.url ? (
+                <a href={s.data.url} target="_blank" rel="noopener" title={s.data.name}>
+                  <Image src={s.data.logo} alt={`${s.data.name} logo`} width={320} />
+                </a>
+              ) : (
+                <Image src={s.data.logo} alt={`${s.data.name} logo`} width={320} />
+              )}
+            </li>
+          ))}
+        </ul>
+        <p class="small muted" style="text-align:center;margin-top:var(--s-5)"><a href="/sponsors/">Become a sponsor</a></p>
+      </div>
+    </section>
+  )}
+
+  <!-- Resources -->
+  {resources.length > 0 && (
+    <section class="section band--blush">
+      <div class="container">
+        <div class="section-head section-head--split" data-reveal>
+          <div>
+            <p class="eyebrow">Resident resources</p>
+            <h2>Resources at your fingertips</h2>
+            <p class="lede">Quick links to essential info for East LA residents and businesses.</p>
+          </div>
+          <a href="/resources/" class="btn btn--secondary">All resources <Icon name="arrow-right" size={16} /></a>
+        </div>
+        <ul class="grid grid--2" data-reveal>
+          {resources.map((r) => (
+            <li>
+              <a class="card res-card" href={`/resources/${r.id}/`}>
+                <span class="res-card__icon"><Icon name={r.data.icon as any} size={20} /></span>
+                <div>
+                  <h3>{r.data.title}</h3>
+                  <p class="small">{r.data.summary}</p>
+                </div>
+                <Icon name="arrow-right" size={18} class="res-card__arrow" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  /* Hero */
+  .hero { position: relative; min-height: min(88vh, 46rem); display: grid; align-items: end; color: #fff; isolation: isolate; }
+  .hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 60%; z-index: -2; }
+  .hero__scrim {
+    position: absolute; inset: 0; z-index: -1;
+    background: linear-gradient(180deg, rgba(20,18,16,0.15) 0%, rgba(20,18,16,0.35) 45%, rgba(20,18,16,0.85) 100%);
+  }
+  .hero__content { padding-block: var(--s-9) var(--s-8); max-width: var(--container); }
+  .hero__eyebrow { color: var(--terracotta-soft); }
+  .hero__title { font-size: var(--fs-hero); color: #fff; max-width: 14ch; margin-bottom: var(--s-5); }
+  .hero__title em { font-style: italic; font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; color: var(--terracotta-soft); }
+  .hero__lede { font-size: var(--fs-md); max-width: 52ch; color: rgba(255,255,255,0.85); margin-bottom: var(--s-6); text-wrap: pretty; }
+  .hero__actions { display: flex; gap: var(--s-3); flex-wrap: wrap; }
+  .hero .btn--secondary { color: #fff; border-color: rgba(255,255,255,0.5); }
+  .hero .btn--secondary:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+
+  /* Stats */
+  .stats { padding-block: var(--s-6); }
+  .stats__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: var(--s-5); }
+  .stats__list li { display: grid; gap: var(--s-1); padding-left: var(--s-4); border-left: 2px solid var(--terracotta); }
+  .stats__value { font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 500; line-height: 1; color: #fff; font-variation-settings: 'opsz' 144; }
+  .stats__label { font-size: var(--fs-sm); color: var(--on-night-soft); }
+
+  /* Events */
+  .event-list { list-style: none; margin: 0; padding: 0; }
+  .event-card { display: flex; gap: var(--s-4); align-items: start; }
+  .event-card__date {
+    flex: none; display: grid; place-items: center; width: 3.75rem; padding: var(--s-2) 0;
+    background: var(--blush); border: 1px solid var(--terracotta-soft); border-radius: var(--radius); color: var(--brick-deep);
+  }
+  .event-card__month { font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .event-card__day { font-family: var(--font-display); font-size: 1.75rem; line-height: 1; }
+  .empty { display: flex; gap: var(--s-4); align-items: center; color: var(--ink-soft); }
+  .empty .icon { color: var(--terracotta); flex: none; }
+
+  /* Directory */
+  .cat-grid { list-style: none; margin: 0; padding: 0; }
+  .cat-card__icon { display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: var(--radius); background: var(--blush); color: var(--brick); margin-bottom: var(--s-4); }
+  .cat-card p { margin: 0; }
+
+  /* Membership */
+  .membership__inner { display: grid; gap: var(--s-7); grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); align-items: center; }
+  .membership__eyebrow { color: var(--terracotta-soft); }
+  .membership__lede { color: rgba(255,255,255,0.85); margin-bottom: var(--s-6); }
+  .membership__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); font-size: var(--fs-md); }
+  .membership__list li { display: flex; gap: var(--s-3); align-items: start; padding-bottom: var(--s-3); border-bottom: 1px solid rgba(255,255,255,0.18); }
+  .membership__list .icon { flex: none; margin-top: 0.3em; color: var(--terracotta-soft); }
+
+  /* Sponsors */
+  .logo-wall { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); }
+  .logo-wall li { display: grid; place-items: center; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s-5); aspect-ratio: 16 / 9; }
+  .logo-wall img { max-height: 3.5rem; width: auto; object-fit: contain; filter: grayscale(1); opacity: 0.8; transition: filter var(--dur), opacity var(--dur); }
+  .logo-wall li:hover img { filter: none; opacity: 1; }
+
+  /* Resources */
+  .res-card { display: flex; gap: var(--s-4); align-items: start; }
+  .res-card__icon { flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: var(--radius); background: var(--blush); color: var(--brick); }
+  .res-card h3 { font-size: var(--fs-lg); }
+  .res-card p { margin: 0; }
+  .res-card__arrow { margin-left: auto; flex: none; color: var(--brick); align-self: center; }
+</style>

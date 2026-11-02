@@ -1,0 +1,9 @@
+---
+/**
+ * Chamber seal. Uses the PNG from the current site until an SVG is supplied.
+ * PHOTO/ASSET: replace public/logo.png with a vector seal when available.
+ */
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+---
+<img src="/logo.png" alt="" width="297" height="315" class={cls} decoding="async" />

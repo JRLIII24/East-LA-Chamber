@@ -1,0 +1,33 @@
+---
+/**
+ * Newsletter signup via Web3Forms (static-host friendly).
+ * Inactive until PUBLIC_WEB3FORMS_KEY is set (see src/data/site.ts).
+ */
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+const key = site.formsKey;
+---
+<form class="newsletter" action="https://api.web3forms.com/submit" method="POST" data-form>
+  <input type="hidden" name="access_key" value={key} />
+  <input type="hidden" name="subject" value="Newsletter signup — eastlachamber.com" />
+  <input type="hidden" name="from_name" value="East LA Chamber website" />
+  <input type="checkbox" name="botcheck" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <label for="newsletter-email" class="visually-hidden">Email address</label>
+  <div class="newsletter__row">
+    <input id="newsletter-email" class="input newsletter__input" type="email" name="email" placeholder="you@example.com" required autocomplete="email" />
+    <button class="btn btn--primary newsletter__btn" type="submit" aria-label="Subscribe">
+      <span class="newsletter__label">Subscribe</span><Icon name="arrow-right" size={16} />
+    </button>
+  </div>
+  <p class="newsletter__status small" role="status" aria-live="polite" data-status></p>
+</form>
+
+<style>
+  .newsletter__row { display: flex; gap: var(--s-2); }
+  .newsletter__input { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.18); color: var(--on-night); }
+  .newsletter__input::placeholder { color: rgba(246,239,232,0.45); }
+  .newsletter__input:focus { border-color: var(--terracotta); box-shadow: 0 0 0 3px rgba(192,107,85,0.25); }
+  .newsletter__btn { flex: none; }
+  .newsletter__status { min-height: 1.5em; margin-top: var(--s-2); color: var(--on-night-soft); }
+  @media (max-width: 26rem) { .newsletter__label { display: none; } .newsletter__btn { padding-inline: 1em; } }
+</style>

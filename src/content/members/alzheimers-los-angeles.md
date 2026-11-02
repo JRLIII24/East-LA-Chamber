@@ -1,0 +1,9 @@
+---
+name: "Alzheimer’s Los Angeles"
+category: "non-profit-community-organizations"
+subcategory: "social-community-services"
+excerpt: "Founded by concerned community members in 1980, Alzheimer’s LA officially incorporated in February 1981."
+phone: "(844) 435-7259"
+---
+
+Founded by concerned community members in 1980, Alzheimer’s LA officially incorporated in February 1981. Now, in 2021, we proudly mark our 40th anniversary of steadfast commitment to the aging community of greater Los Angeles and we are grateful for the continued support and partnership of so many. Throughout our long history we have not wavered from our mission to provide the critically needed education, support, and advocacy for which families facing Alzheimer’s have come to rely on us. In this difficult time of COVID-19, we have redoubled our commitment to providing the care families so desperately need. Today, we are leaders in innovative programming for people living with Alzheimer’s or another dementia. We have earned the trust of families, of diverse communities, and of the professionals who serve them through our steadfast dedication to providing services and programs that truly improve peoples’ quality of life. With 40 years of serving the community, Alzheimer’s Los Angeles is locally focused and nationally and internationally recognized for providing high-impact support, resources, and education to people and families facing the disease. We now turn our vision to the future and commit to building on our legacy to ensure that anyone in need of help gets it. We will work to educate the richly diverse region of greater Los Angeles about what dementia is and isn’t, and fight to eliminate the stigma that perpetuates misunderstanding and creates unnecessary barriers to accessing the support we’re here to provide. Until there’s a cure, we’ll provide the care.

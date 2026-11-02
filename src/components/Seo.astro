@@ -1,0 +1,72 @@
+---
+/**
+ * Every page gets its <title>, description, canonical, Open Graph, Twitter
+ * card and base JSON-LD from here. Pass page-specific `jsonLd` to add more.
+ */
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or site-relative path to an OG image. Defaults to the brand card. */
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = site.description,
+  image = '/og-default.jpg',
+  type = 'website',
+  noindex = false,
+  jsonLd,
+} = Astro.props;
+
+const fullTitle = title === site.name ? title : `${title} | ${site.shortName}`;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL(image, site.url).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${site.url}/#organization`,
+  name: site.name,
+  url: site.url,
+  logo: `${site.url}/logo.png`,
+  foundingDate: String(site.founded),
+  telephone: site.phone,
+  email: site.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    addressLocality: site.address.city,
+    addressRegion: site.address.state,
+    postalCode: site.address.zip,
+    addressCountry: 'US',
+  },
+  sameAs: Object.values(site.social),
+};
+
+const ld = [organization, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [])];
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<meta property="og:site_name" content={site.name} />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<script type="application/ld+json" set:html={JSON.stringify(ld)} />
