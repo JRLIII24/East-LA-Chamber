@@ -42,7 +42,7 @@ const faqLd = {
   <section class="section" id="benefits">
     <div class="container">
       <div class="section-head"><p class="eyebrow">Benefits</p><h2>What members get</h2></div>
-      <ul class="grid grid--3 benefits">
+      <ul class="grid grid--3 benefits" data-reveal data-stagger>
         {benefits.map((b) => (
           <li class="card">
             <span class="benefit__icon"><Icon name={b.icon} size={22} /></span>
@@ -57,7 +57,7 @@ const faqLd = {
   <section class="section band">
     <div class="container">
       <div class="section-head"><p class="eyebrow">Levels</p><h2>Membership levels</h2><p class="lede">Dues are annual and scaled to the size of your organization. Contact us for current rates.</p></div>
-      <div class="grid grid--3 tiers">
+      <div class="grid grid--3 tiers" data-reveal data-stagger>
         {tiers.map((t) => (
           <div class:list={['card', 'tier', { 'tier--featured': t.featured }]}>
             {t.featured && <p class="tag tier__badge">Most popular</p>}
@@ -75,7 +75,7 @@ const faqLd = {
   <section class="section">
     <div class="container how">
       <div class="section-head"><p class="eyebrow">How it works</p><h2>Three steps to membership</h2></div>
-      <ol class="steps">
+      <ol class="steps" data-reveal data-stagger>
         <li><span class="steps__n">1</span><div><h3>Apply online</h3><p class="small">Five minutes. Tell us about your business and which category you belong in.</p></div></li>
         <li><span class="steps__n">2</span><div><h3>We'll be in touch</h3><p class="small">A team member confirms your level, collects dues and gathers your logo and details.</p></div></li>
         <li><span class="steps__n">3</span><div><h3>You're listed</h3><p class="small">Your directory page goes live and you're invited to the next event.</p></div></li>

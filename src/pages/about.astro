@@ -66,7 +66,7 @@ const timeline = [
   <section class="section">
     <div class="container">
       <div class="section-head"><p class="eyebrow">What we stand for</p><h2>Our values</h2></div>
-      <ul class="grid grid--4 values">
+      <ul class="grid grid--4 values" data-reveal data-stagger>
         {values.map((v) => (
           <li>
             <span class="values__icon"><Icon name={v.icon} size={22} /></span>
@@ -81,7 +81,7 @@ const timeline = [
   <section class="section band">
     <div class="container">
       <div class="section-head"><p class="eyebrow">History</p><h2>Milestones</h2></div>
-      <ol class="timeline">
+      <ol class="timeline" data-reveal data-stagger>
         {timeline.map((t) => <li><span class="timeline__year">{t.year}</span><p>{t.text}</p></li>)}
       </ol>
     </div>

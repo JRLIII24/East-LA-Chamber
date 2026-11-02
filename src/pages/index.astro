@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import { site, cta } from '../data/site';
+import Marquee from '../components/Marquee.astro';
 import heroPhoto from '../assets/brand/welcome-sign.jpg'; // PHOTO: hero — replace with a real event/street photo
 
 const categories = (await getCollection('categories')).sort((a, b) => a.data.order - b.data.order);
@@ -67,16 +68,18 @@ const jsonLd = {
   <!-- Stats -->
   <section class="stats band--night">
     <div class="container">
-      <ul class="stats__list">
+      <ul class="stats__list" data-stats>
         {stats.map((s) => (
           <li>
-            <span class="stats__value">{s.value}</span>
+            <span class="stats__value" data-count={s.value}>{s.value}</span>
             <span class="stats__label">{s.label}</span>
           </li>
         ))}
       </ul>
     </div>
   </section>
+
+  <Marquee />
 
   <!-- Events -->
   <section class="section">
@@ -90,7 +93,7 @@ const jsonLd = {
         <a href="/events/" class="btn btn--secondary">All events <Icon name="arrow-right" size={16} /></a>
       </div>
       {upcoming.length ? (
-        <ul class="event-list grid grid--3" data-reveal>
+        <ul class="event-list grid grid--3" data-reveal data-stagger>
           {upcoming.map((e) => (
             <li>
               <a class="card event-card" href={`/events/${e.id}/`}>
@@ -126,7 +129,7 @@ const jsonLd = {
         </div>
         <a href="/directory/" class="btn btn--secondary">Browse all categories <Icon name="arrow-right" size={16} /></a>
       </div>
-      <ul class="grid grid--3 cat-grid" data-reveal>
+      <ul class="grid grid--3 cat-grid" data-reveal data-stagger>
         {featuredCats.map((c) => (
           <li>
             <a class="card cat-card" href={`/directory/${c.id}/`}>
@@ -149,7 +152,7 @@ const jsonLd = {
         <p class="lede membership__lede">Join a network that has stood up for East LA business owners for over a century.</p>
         <a href={cta.href} class="btn btn--primary btn--lg">See membership benefits <Icon name="arrow-right" size={18} /></a>
       </div>
-      <ul class="membership__list" data-reveal>
+      <ul class="membership__list" data-reveal data-stagger>
         <li><Icon name="check" size={18} /> A listing in the member directory</li>
         <li><Icon name="check" size={18} /> Promotion through chamber channels and events</li>
         <li><Icon name="check" size={18} /> Networking with local leaders and officials</li>
@@ -167,7 +170,7 @@ const jsonLd = {
           <p class="eyebrow">Our sponsors</p>
           <h2>Partners investing in East LA</h2>
         </div>
-        <ul class="logo-wall" data-reveal>
+        <ul class="logo-wall" data-reveal data-stagger>
           {sponsors.map((s) => (
             <li>
               {s.data.url ? (
@@ -197,7 +200,7 @@ const jsonLd = {
           </div>
           <a href="/resources/" class="btn btn--secondary">All resources <Icon name="arrow-right" size={16} /></a>
         </div>
-        <ul class="grid grid--2" data-reveal>
+        <ul class="grid grid--2" data-reveal data-stagger>
           {resources.map((r) => (
             <li>
               <a class="card res-card" href={`/resources/${r.id}/`}>
@@ -218,13 +221,20 @@ const jsonLd = {
 
 <style>
   /* Hero */
-  .hero { position: relative; min-height: min(88vh, 46rem); display: grid; align-items: end; color: #fff; isolation: isolate; }
+  .hero { position: relative; min-height: min(88vh, 46rem); display: grid; align-items: end; color: #fff; isolation: isolate; overflow: hidden; }
   .hero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 60%; z-index: -2; }
   .hero__scrim {
     position: absolute; inset: 0; z-index: -1;
     background: linear-gradient(180deg, rgba(20,18,16,0.15) 0%, rgba(20,18,16,0.35) 45%, rgba(20,18,16,0.85) 100%);
   }
   .hero__content { padding-block: var(--s-9) var(--s-8); max-width: var(--container); }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__img { animation: ken-burns 22s ease-out both; transform-origin: 55% 60%; }
+    .hero__eyebrow, .hero__title, .hero__lede, .hero__actions { animation: fade-up 800ms var(--ease) both; }
+    .hero__title { animation-delay: 120ms; }
+    .hero__lede { animation-delay: 260ms; }
+    .hero__actions { animation-delay: 400ms; }
+  }
   .hero__eyebrow { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
   .hero__title { font-size: var(--fs-hero); color: #fff; max-width: 14ch; margin-bottom: var(--s-5); }
   .hero__title em { font-style: italic; font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; color: var(--terracotta-soft); }
@@ -237,6 +247,7 @@ const jsonLd = {
   .stats { padding-block: var(--s-6); }
   .stats__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: var(--s-5); }
   .stats__list li { display: grid; gap: var(--s-1); padding-left: var(--s-4); border-left: 2px solid var(--terracotta); }
+  .stats__value { font-variant-numeric: tabular-nums; }
   .stats__value { font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 500; line-height: 1; color: #fff; font-variation-settings: 'opsz' 144; }
   .stats__label { font-size: var(--fs-sm); color: var(--on-night-soft); }
 
@@ -276,5 +287,30 @@ const jsonLd = {
   .res-card__icon { flex: none; display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: var(--radius); background: var(--blush); color: var(--brick); }
   .res-card h3 { font-size: var(--fs-lg); }
   .res-card p { margin: 0; }
-  .res-card__arrow { margin-left: auto; flex: none; color: var(--brick); align-self: center; }
+  .res-card__arrow { margin-left: auto; flex: none; color: var(--brick); align-self: center; transition: transform var(--dur) var(--ease); }
+  .res-card:hover .res-card__arrow { transform: translateX(4px); }
 </style>
+
+<script>
+  // Count-up for the stats band. Final text is already in the HTML, so no JS = correct numbers.
+  const list = document.querySelector('[data-stats]');
+  if (list && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      list.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+        const final = el.dataset.count ?? '';
+        const m = final.match(/^(\d+)(.*)$/);
+        if (!m) return;
+        const target = Number(m[1]); const suffix = m[2]; const t0 = performance.now(); const dur = 1400;
+        const tick = (t: number) => {
+          const p = Math.min(1, (t - t0) / dur); const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * eased) + suffix;
+          if (p < 1) requestAnimationFrame(tick); else el.textContent = final;
+        };
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.4 });
+    io.observe(list);
+  }
+</script>

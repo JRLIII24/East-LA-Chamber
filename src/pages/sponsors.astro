@@ -23,7 +23,7 @@ const tiers = [
       <section class="section--tight section">
         <div class="container">
           <div class="section-head"><h2>{t.title}</h2><p class="lede">{t.blurb}</p></div>
-          <ul class:list={['logo-wall', `logo-wall--${t.key}`]}>
+          <ul class:list={['logo-wall', `logo-wall--${t.key}`]} data-reveal data-stagger>
             {list.map((s) => (
               <li>
                 {s.data.url ? (
@@ -46,7 +46,7 @@ const tiers = [
       <div class="section-head"><p class="eyebrow">Sponsorship</p><h2>Put your brand in front of East LA</h2><p class="lede">Sponsorship packages are flexible — from a single event to year-round presenting partnership. Every tier includes recognition on this page.</p></div>
       <!-- TODO(chamber): confirm tier names, pricing and benefits -->
       <div class="grid grid--3">
-        <div class="card"><p class="tag" style="background:var(--gold);border-color:var(--gold);color:var(--night)">Presenting</p><h3>Year-round partner</h3><ul class="small"><li>Logo on homepage and every event</li><li>Speaking opportunity at Installation Dinner</li><li>Featured directory listing</li><li>Social media features</li></ul></div>
+        <div class="card"><p class="tag tag--gold">Presenting</p><h3>Year-round partner</h3><ul class="small"><li>Logo on homepage and every event</li><li>Speaking opportunity at Installation Dinner</li><li>Featured directory listing</li><li>Social media features</li></ul></div>
         <div class="card"><p class="tag">Gold</p><h3>Event sponsor</h3><ul class="small"><li>Logo on event materials and this page</li><li>Reserved table or booth</li><li>Recognition from the podium</li></ul></div>
         <div class="card"><p class="tag">Community</p><h3>Program supporter</h3><ul class="small"><li>Logo on this page</li><li>Recognition in the newsletter</li><li>Invitation to all chamber events</li></ul></div>
       </div>

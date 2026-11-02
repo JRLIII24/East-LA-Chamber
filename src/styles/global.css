@@ -79,6 +79,7 @@ p:last-child { margin-bottom: 0; }
 .band--night a:not(.btn) { color: var(--terracotta-soft); }
 .band--night .eyebrow, .band--brick .eyebrow { color: var(--terracotta-soft); }
 .band--night .card .tag, .band--brick .tag { color: var(--brick-deep); background: var(--blush); }
+.tag--gold, .band--night .card .tag--gold { background: var(--gold); border-color: var(--gold); color: var(--brick-ink); }
 .band--brick { background: var(--brick); color: #fff; }
 .band--brick h1, .band--brick h2, .band--brick h3 { color: #fff; }
 
@@ -169,8 +170,45 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-co
 .prose a { text-decoration: underline; }
 
 /* ---------- Reveal on scroll (progressive: visible without JS) ---------- */
-/* Hidden state applies only while html has .js-reveal (set by the script, removed on fallback). */
+/* ---------- Motion ----------
+   Hidden states apply only while <html> has .js-reveal (set by the script, removed on fallback
+   after 1.5s), and never under prefers-reduced-motion. Content is always reachable. */
 @media (prefers-reduced-motion: no-preference) {
-  .js-reveal [data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+  .js-reveal [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity 700ms var(--ease), transform 700ms var(--ease); }
   .js-reveal [data-reveal].is-in { opacity: 1; transform: none; }
+
+  /* Staggered children: add data-stagger to a grid/list that also has data-reveal */
+  .js-reveal [data-stagger] > * { opacity: 0; transform: translateY(14px); transition: opacity 600ms var(--ease), transform 600ms var(--ease); }
+  .js-reveal [data-stagger].is-in > * { opacity: 1; transform: none; }
+  [data-stagger] > :nth-child(1) { transition-delay: 0ms; }
+  [data-stagger] > :nth-child(2) { transition-delay: 70ms; }
+  [data-stagger] > :nth-child(3) { transition-delay: 140ms; }
+  [data-stagger] > :nth-child(4) { transition-delay: 210ms; }
+  [data-stagger] > :nth-child(5) { transition-delay: 280ms; }
+  [data-stagger] > :nth-child(6) { transition-delay: 350ms; }
+  [data-stagger] > :nth-child(7) { transition-delay: 420ms; }
+  [data-stagger] > :nth-child(8) { transition-delay: 490ms; }
+  [data-stagger] > :nth-child(n+9) { transition-delay: 560ms; }
+
+  /* Eyebrow rule draws in when its section reveals */
+  .js-reveal [data-reveal] .eyebrow::before { width: 0; transition: width 600ms var(--ease) 200ms; }
+  .js-reveal [data-reveal].is-in .eyebrow::before { width: 1.5rem; }
+
+  /* Buttons: arrow nudges, primary gets a soft sheen */
+  .btn .icon { transition: transform var(--dur) var(--ease); }
+  .btn:hover .icon { transform: translateX(3px); }
+  .btn--primary { background-image: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0) 60%); }
+
+  /* Card hover: lift + warm top rule */
+  a.card { position: relative; overflow: hidden; }
+  a.card::after { content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; background: linear-gradient(90deg, var(--brick), var(--terracotta)); transform: scaleX(0); transform-origin: left; transition: transform 350ms var(--ease); }
+  a.card:hover::after { transform: scaleX(1); }
+
+  /* Icon tiles tilt on card hover */
+  .card [class$="__icon"] { transition: transform 350ms var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease); }
+  a.card:hover [class$="__icon"] { transform: rotate(-6deg) scale(1.08); background: var(--brick); color: #fff; }
+
+  @keyframes fade-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  @keyframes ken-burns { from { transform: scale(1); } to { transform: scale(1.08); } }
+  @keyframes marquee { to { transform: translateX(-50%); } }
 }

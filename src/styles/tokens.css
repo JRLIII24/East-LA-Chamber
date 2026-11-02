@@ -3,7 +3,7 @@
    ------------------------------------------------------------------ */
 :root {
   /* Brand */
-  --brick: #8f3f2a;
+  --brick: #963c2b;        /* between the seal (#a04030) and a text-safe deep red */
   --brick-deep: #6e2d1f;
   --brick-ink: #4f1f14;
   --terracotta: #c06b55;
@@ -15,14 +15,14 @@
   --ink-soft: #4a4b45;
   --ink-muted: #66655f; /* 5.2:1 on --paper-2 */
   --paper: #fbf7f2;
-  --paper-2: #f3ebe3;
+  --paper-2: #f1e6da;
   --blush: #fff6f4;
   --line: #e5ddd4;
   --line-strong: #cfc4b8;
-  --night: #141210;
-  --night-2: #221e1a;
-  --on-night: #f6efe8;
-  --on-night-soft: rgba(246, 239, 232, 0.72);
+  --night: #2b1a14;        /* warm dark: the seal red at ~15% lightness, not cold black */
+  --night-2: #3a2620;
+  --on-night: #f8f0e8;
+  --on-night-soft: rgba(248, 240, 232, 0.74);
 
   /* Semantic */
   --bg: var(--paper);

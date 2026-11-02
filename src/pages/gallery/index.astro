@@ -12,7 +12,7 @@ const total = albums.reduce((n, a) => n + a.data.photos.length, 0);
   <PageHero eyebrow="Gallery" title="The true essence of East Los Angeles" lede="Resilient, creative, family-built and full of opportunity. These are the businesses we build, the culture we protect and the events that bring people together." crumbs={[{ label: 'Gallery' }]} />
   <section class="section">
     <div class="container">
-      <ul class="grid grid--3 albums">
+      <ul class="grid grid--3 albums" data-reveal data-stagger>
         {albums.map((a) => (
           <li>
             <a class="album" href={`/gallery/${a.id}/`}>
