@@ -247,7 +247,11 @@ const jsonLd = {
   .stats { padding-block: var(--s-6); }
   .stats__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: var(--s-5); }
   .stats__list li { display: grid; gap: var(--s-1); padding-left: var(--s-4); border-left: 2px solid var(--terracotta); }
-  .stats__value { font-variant-numeric: tabular-nums; }
+  .stats__value { font-variant-numeric: tabular-nums; display: inline-block; }
+  @media (prefers-reduced-motion: no-preference) {
+    .stats__value.is-done { animation: stat-pop 450ms var(--ease); }
+    @keyframes stat-pop { 0% { transform: scale(1); } 40% { transform: scale(1.08); color: var(--terracotta-soft); } 100% { transform: scale(1); } }
+  }
   .stats__value { font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 500; line-height: 1; color: #fff; font-variation-settings: 'opsz' 144; }
   .stats__label { font-size: var(--fs-sm); color: var(--on-night-soft); }
 
@@ -293,24 +297,33 @@ const jsonLd = {
 
 <script>
   // Count-up for the stats band. Final text is already in the HTML, so no JS = correct numbers.
-  const list = document.querySelector('[data-stats]');
+  const list = document.querySelector<HTMLElement>('[data-stats]');
   if (list && 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const counters = [...list.querySelectorAll<HTMLElement>('[data-count]')]
+      .map((el) => { const m = (el.dataset.count ?? '').match(/^(\d+)(.*)$/); return m ? { el, target: Number(m[1]), suffix: m[2], final: el.dataset.count! } : null; })
+      .filter((c): c is NonNullable<typeof c> => c !== null);
+    // Zero out right away so the first thing seen is the climb, not the answer.
+    counters.forEach((c) => { c.el.textContent = '0' + c.suffix; });
+
+    const run = () => {
+      const dur = 2200; const t0 = performance.now();
+      const tick = (t: number) => {
+        const p = Math.min(1, (t - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 4); // fast start, long settle
+        counters.forEach((c) => { c.el.textContent = Math.round(c.target * eased) + c.suffix; });
+        if (p < 1) requestAnimationFrame(tick);
+        else counters.forEach((c) => { c.el.textContent = c.final; c.el.classList.add('is-done'); });
+      };
+      requestAnimationFrame(tick);
+    };
+
     const io = new IntersectionObserver((entries) => {
       if (!entries.some((e) => e.isIntersecting)) return;
       io.disconnect();
-      list.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
-        const final = el.dataset.count ?? '';
-        const m = final.match(/^(\d+)(.*)$/);
-        if (!m) return;
-        const target = Number(m[1]); const suffix = m[2]; const t0 = performance.now(); const dur = 1400;
-        const tick = (t: number) => {
-          const p = Math.min(1, (t - t0) / dur); const eased = 1 - Math.pow(1 - p, 3);
-          el.textContent = Math.round(target * eased) + suffix;
-          if (p < 1) requestAnimationFrame(tick); else el.textContent = final;
-        };
-        requestAnimationFrame(tick);
-      });
-    }, { threshold: 0.4 });
+      // Wait for the hero's entrance to finish so the count happens where the eye is.
+      const sinceLoad = performance.now();
+      setTimeout(run, Math.max(150, 1100 - sinceLoad));
+    }, { threshold: 0.5 });
     io.observe(list);
   }
 </script>
